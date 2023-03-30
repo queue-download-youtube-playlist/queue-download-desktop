@@ -1,7 +1,7 @@
 {
   "name": "queue-download-desktop",
   "productName": "youtube playlist download queue",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "youtube playlist download one by one, youtube video download, youtube thumbnail download ",
   "main": ".webpack/main",
   "scripts": {
