@@ -1,0 +1,19 @@
+# intellij idea
+.idea
+
+# nodejs
+node_modules
+
+# electron
+db.sqlite
+out
+.webpack
+
+# yarn
+.yarn
+yarn.lock
+yarn-error.log
+
+# custom
+*.sh
+*.tgz
