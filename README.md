@@ -52,7 +52,7 @@ that's all.
 
 find a youtube video [https://www.youtube.com/watch?v=id-6SkQzf3E](https://www.youtube.com/watch?v=id-6SkQzf3E)
 
-![/image/downlaod_video.png](/image/downlaod_video.png)
+![downlaod_video.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/downlaod_video.png)
 
 in browser context menu,
 
@@ -62,7 +62,7 @@ click "download video", it will auto download youtube video.
 
 find a youtube playlist,
 
-you will find a icon ![/image/add_to_queue.png](/image/add_to_queue.png)
+you will find a icon ![add_to_queue.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/add_to_queue.png)
 
 move your mouse on it, show you "add to queue"
 
