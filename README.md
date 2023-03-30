@@ -76,6 +76,9 @@ you need go to desktop app,
 
 click the "download all video", it will download all youtube video.
 
+---
+
+[MIT LICENSE](https://github.com/queue-download-youtube-playlist/queue-download-desktop/blob/main/LICENSE)
 
 ---
 
