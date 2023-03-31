@@ -15,5 +15,6 @@ yarn.lock
 yarn-error.log
 
 # custom
+*.env
 *.sh
 *.tgz
