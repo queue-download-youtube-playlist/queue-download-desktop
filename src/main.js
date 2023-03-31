@@ -5,8 +5,11 @@ const path = require('path');
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-
+// auto update electron app
+require('update-electron-app')();
+// express js a
 const {url} = require('../server/app');
+
 const createWindow = () => {
   const {width, height} = require('electron').
       screen.

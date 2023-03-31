@@ -13,7 +13,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-
 const socketList = {};
 const hostname = 'localhost';
 const port = 16206;

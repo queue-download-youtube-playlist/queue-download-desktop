@@ -1,8 +1,10 @@
 const {readEnvFile} = require('./util/index.common');
 let iconPath = require('path').join('image', 'icon');
 
-const {BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD}
-    = readEnvFile('env.sh')
+const {
+  // BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD,
+  GITHUB_AUTHTOKEN,
+} = readEnvFile('auth.env');
 
 module.exports = {
   packagerConfig: {
@@ -40,20 +42,33 @@ module.exports = {
     },
   ],
   publishers: [
+    // {
+    //   name: '@electron-forge/publisher-bitbucket',
+    //   config: {
+    //     // replaceExistingFiles: true,
+    //     repository: {
+    //       owner: 'vacantthinker',
+    //       name: 'queue-download-desktop',
+    //     },
+    //     auth: {
+    //       username: BITBUCKET_USERNAME, // string
+    //       appPassword: BITBUCKET_APP_PASSWORD, // string
+    //     },
+    //   },
+    // },
+
     {
-      name: '@electron-forge/publisher-bitbucket',
+      name: '@electron-forge/publisher-github',
       config: {
-        replaceExistingFiles: true,
         repository: {
-          owner: 'vacantthinker',
+          owner: 'queue-download-youtube-playlist',
           name: 'queue-download-desktop',
         },
-        auth: {
-          username: BITBUCKET_USERNAME, // string
-          appPassword: BITBUCKET_APP_PASSWORD, // string
-        },
+        // prerelease: true,
+        authToken: GITHUB_AUTHTOKEN,
       },
     },
   ],
 
 };
+// https://github.com/queue-download-youtube-playlist/queue-download-desktop

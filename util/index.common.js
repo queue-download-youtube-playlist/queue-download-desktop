@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 
 /**
- * read env file , eg: env.sh xxx.env
+ * read env file , eg: auth.env xxx.env
  *
  * @param filename path env file
  * @returns {{}}
