@@ -21,9 +21,8 @@ function getPathElectron() {
   const pathRoot = process.cwd();
   const basename = path.basename(pathRoot);
   const pathParent = pathRoot.replace(basename, '');
-  const pathElectron = path.join(pathParent, `${basename}-electron`);
-  console.log(`pathElectron=\n`, pathElectron, `\n`);
-  return pathElectron;
+
+  return pathParent;
 }
 
 /**
@@ -37,17 +36,16 @@ function getPathElectron() {
  *
  *
  * @param title
- * @param pathTarget
  */
 function setupElectron_index_html(
     title = null,
-    pathTarget = 'dist') {
+) {
 
   if (title === null) {
     title = 'index.html title';
   }
-  const indexHtmlContent =
-      `<!DOCTYPE html>
+
+  let indexHtmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -63,7 +61,7 @@ function setupElectron_index_html(
 `;
 
   const string_index_html = 'index.html';
-  const path_index_html = path.join(pathTarget, string_index_html);
+  const path_index_html = path.join(getPathRoot(), 'dist', string_index_html);
   fs.writeFileSync(path_index_html, '');
   fs.writeFileSync(path_index_html, indexHtmlContent);
 
@@ -78,9 +76,10 @@ function setupElectron_index_html(
  *
  *    import './assets/home-view-xxx.js'
  *
- * @param pathTarget {String}
  */
-function setupElectron_renderer_js(pathTarget = 'dist') {
+function setupElectron_renderer_js() {
+
+  let pathTarget = path.join(getPathRoot(), 'dist');
   const string_assets = 'assets';
   const string_renderer_js = 'renderer.js';
   const path_assets = path.join(pathTarget, string_assets);
@@ -93,6 +92,11 @@ function setupElectron_renderer_js(pathTarget = 'dist') {
     fs.appendFileSync(path_renderer_js, text);
   });
 }
+
+const copyType = {
+  justCopy: 'justCopy',
+  electronIndex: 'electronIndex',
+};
 
 /**
  * npm run build (vite build) -->
@@ -108,25 +112,17 @@ function setupElectron_renderer_js(pathTarget = 'dist') {
  * end
  *
  * @param indexHtmlTitle index.html title
- * @param dirNameElectron electron project dir name
  */
 function setupVueToElectron(
     indexHtmlTitle = null,
-    dirNameElectron = null) {
+) {
 
   execAsync(cmd.npm_run_build, () => {
     setupElectron_index_html(indexHtmlTitle);
     setupElectron_renderer_js();
 
-    let pathElectron = getPathRoot();
-    if (dirNameElectron === null) {
-      pathElectron = getPathElectron();
-    } else {
-      pathElectron = path.join(getPathParent(), dirNameElectron);
-    }
-
     const src = path.join(getPathRoot(), 'dist');
-    const dest = path.join(pathElectron, 'public');
+    const dest = path.join(getPathElectron(), 'public');
     if (fs.existsSync(dest)) {
       console.log(`dest exists --> rm ... ${dest}`);
       fs.rmSync(dest, {recursive: true, force: true});
@@ -244,6 +240,7 @@ const cmd = {
 };
 
 module.exports = {
+  copyType: copyType,
   setupVueToElectron: setupVueToElectron,
   setupElectron_index_html: setupElectron_index_html,
   setupElectron_renderer_js: setupElectron_renderer_js,

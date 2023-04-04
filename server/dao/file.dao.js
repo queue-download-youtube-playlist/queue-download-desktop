@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const {table} = require('../db/util.typeorm.js');
+const {daoNotice} = require('./notice.dao');
 
 const endsJPG = `.jpg`;
 const endsMP4 = `.mp4`;
@@ -66,11 +67,6 @@ async function common(video) {
 
 }
 
-async function getVideoPath(video) {
-  let map = await common(video);
-  return map.newPathMP4;
-}
-
 async function deleteDownloadedMP4JPG(video) {
   let map = await common(video);
   try {
@@ -103,6 +99,7 @@ async function moveJPG(video) {
     try {
       fs.renameSync(map.oldPathJPG, map.newPathJPG);
       console.log(`moved ok  \n${filename}`);
+
     } catch (e) {
       console.log(`moved failed !!! \n${filename}`);
       console.log(e);
@@ -117,9 +114,8 @@ function getPatharia2c() {
 async function checkUnnecessaryMP4() {
   let tmplocation = await getConfigTmplocation();
   let files = fs.readdirSync(tmplocation);
-  let filter = files
-      .filter(value => value.endsWith(endsMP4))
-      .filter(value => value.endsWith(endsaria2));
+  let filter = files.filter(value => value.endsWith(endsMP4)).
+      filter(value => value.endsWith(endsaria2));
 
   try {
     filter.forEach(value => {
@@ -134,9 +130,23 @@ async function checkUnnecessaryMP4() {
   }
 }
 
-async function checkVidFilenamePathMP4(video) {
-  let map = await common(video);
-  return fs.existsSync(map.newPathMP4);
+/**
+ *
+ * @param video{Object:{vid:String}}
+ * @returns {Promise<{pathmp4:String, exists:Boolean}>}
+ */
+async function checkNewPathMP4(video) {
+  try {
+    let map = await common(video);
+    let pathmp4 = map.newPathMP4;
+    let exists = fs.existsSync(pathmp4);
+    return {pathmp4, exists};
+  } catch (e) {
+    console.log(`e=\n`, e, `\n`);
+    let pathmp4 = null;
+    let exists = false;
+    return {pathmp4, exists};
+  }
 }
 
 /**
@@ -144,7 +154,7 @@ async function checkVidFilenamePathMP4(video) {
  * @param video
  * @returns {Promise<{iszero: boolean, filesize: *}>}
  */
-async function checkFileSize(video) {
+async function checkOldMP4FileSize(video) {
   const map = await common(video);
   try {
     const stats = fs.statSync(map.oldPathMP4);
@@ -168,12 +178,11 @@ const daoFile = {
   moveMP4: moveMP4,
   moveJPG: moveJPG,
 
-  checkVidFilenamePathMP4: checkVidFilenamePathMP4,
+  checkNewPathMP4: checkNewPathMP4,
   checkUnnecessaryMP4: checkUnnecessaryMP4,
 
-  checkFileSize: checkFileSize,
+  checkOldMP4FileSize: checkOldMP4FileSize,
   getPatharia2c: getPatharia2c,
-  getVideoPath: getVideoPath,
 };
 
 module.exports = {

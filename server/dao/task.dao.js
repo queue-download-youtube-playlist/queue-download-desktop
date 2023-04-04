@@ -40,7 +40,7 @@ async function taskPost(message, passdata) {
           playlist,
           total,
         };
-        daoNotice.noticedesktopQueueUpdate({
+        daoNotice.n_desk_QueueUpdate({
           queue,
         }, passdata);
       }

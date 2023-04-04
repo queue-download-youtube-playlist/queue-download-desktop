@@ -1,13 +1,17 @@
 {
   "name": "queue-download-desktop",
   "productName": "youtube playlist download queue",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "youtube playlist download one by one, youtube video download, youtube thumbnail download ",
   "main": ".webpack/main",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/queue-download-youtube-playlist/queue-download-desktop.git"
+  },
   "scripts": {
     "git_push": "git add . && git commit -m 'update' && git push --force",
     "git_push_force": "git push --force",
-    "node_appjs": "npm rebuild better-sqlite3 && node server/app.js",
+    "node_appjs": "node server/app.js",
     "yarn_install": "yarn install",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
     "start": "electron-forge start",
@@ -22,9 +26,13 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.5",
-    "@electron-forge/maker-squirrel": "^6.0.5",
-    "@electron-forge/plugin-webpack": "^6.0.5",
+    "@electron-forge/cli": "^6.1.0",
+    "@electron-forge/maker-deb": "^6.1.0",
+    "@electron-forge/maker-rpm": "^6.1.0",
+    "@electron-forge/maker-squirrel": "^6.1.0",
+    "@electron-forge/maker-zip": "^6.1.0",
+    "@electron-forge/plugin-webpack": "^6.1.0",
+
     "@electron-forge/publisher-bitbucket": "^6.1.0",
     "@electron-forge/publisher-github": "^6.1.0",
     "@electron/rebuild": "^3.2.10",
@@ -33,11 +41,10 @@
     "css-loader": "^6.0.0",
     "electron": "23.2.0",
     "node-loader": "^2.0.0",
-    "pkg": "^5.8.1",
     "style-loader": "^3.0.0"
   },
   "dependencies": {
-    "better-sqlite3": "^8.2.0",
+    "better-sqlite3": "^8.1.0",
     "body-parser": "1.20.1",
     "cors": "^2.8.5",
     "electron-squirrel-startup": "^1.0.0",

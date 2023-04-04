@@ -1,8 +1,7 @@
-function noticeAllClient(message, passdata) {
-//  console.log('noticeAllClient() message=\n', message);
-  const clients = passdata.socketList;
-  Object.keys(clients).forEach(key => {
-    let conn = clients[key];
+function _notice_All_Client(message, passdata) {
+//  console.log('_notice_All_Client() message=\n', message);
+  const clients = passdata.socketMap;
+  Object.values(clients).forEach(conn => {
     conn?.send(JSON.stringify(message));
   });
 }
@@ -10,11 +9,10 @@ function noticeAllClient(message, passdata) {
 function noticeClientExpectSender(message, passdata) {
   // console.log('noticeClientExpectSender() message=\n', message);
   let {uuid} = message;
-  const clients = passdata.socketList;
+  const clients = passdata.socketMap;
   let tmpVal = clients[uuid];
   clients[uuid] = null;
-  Object.keys(clients).forEach(key => {
-    let conn = clients[key];
+  Object.values(clients).forEach(conn => {
     conn?.send(JSON.stringify(message));
   });
   clients[uuid] = tmpVal;
@@ -26,7 +24,7 @@ function noticeClientExpectSender(message, passdata) {
  * @param passdata app.js passdata
  */
 async function noticebrowserMP4(message, passdata) {
-  let {vid, uuid, queue} = message;
+  let {vid, queue} = message;
   // console.log(`notice.dao.js noticebrowserMP4   vid ${vid}`, '\n', 'queue=', queue);
 
   if (vid) {
@@ -41,19 +39,29 @@ async function noticebrowserMP4(message, passdata) {
       videourl,
       // type: `xdownload`,
     };
-    noticeAllClient(message, passdata);
+    _notice_All_Client(message, passdata);
   }
 }
 
-function noticebrowserSendMessageToNotice(message, passdata) {
-  let {text} = message;
-  noticeAllClient(
+/**
+ *
+ * @param message{Object:{title:String, text:String}}
+ * @param passdata
+ */
+function nb_notice(message, passdata) {
+  let {title, text} = message;
+  let titleDefault = 'youtube playlist download queue';
+  if (title) {
+  } else {
+    title = titleDefault;
+  }
+
+  _notice_All_Client(
       {
-        action: `notice_browser_sendmessagetonotice`,
+        action: `nb_notice`,
+
+        title: String(title),
         text: String(text),
-        close: {
-          timeout: 3,
-        },
       }, passdata,
   );
 }
@@ -70,7 +78,7 @@ function noticeDownloadInfo(data, passdata) {
       text: first,
       action: `notice_browser_sendmessagetonotice`,
     };
-//    noticeAllClient(message, passdata);
+//    _notice_All_Client(message, passdata);
 
   } else if (regExpDownloadComplete.test(data)) {
     let mat = data.match(regExpDownloadComplete);
@@ -83,7 +91,7 @@ function noticeDownloadInfo(data, passdata) {
         timeout: 3,
       },
     };
-    noticeAllClient(message, passdata);
+    _notice_All_Client(message, passdata);
 
   } else {
 
@@ -106,7 +114,7 @@ function noticebrowserJPG(message, passdata) {
       'url': `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`,
       // type: `image`,
     };
-    noticeAllClient(message, passdata);
+    _notice_All_Client(message, passdata);
   }
 }
 
@@ -117,7 +125,7 @@ function noticebrowserJPG(message, passdata) {
  */
 function noticebrowserPlaylist(message, passdata) {
   let {queue} = message;
-  let {playlist, uuid, title} = queue;
+  let {playlist, title} = queue;
   // console.log(`notice router noticePlaylist playlist=${playlist}`);
   if (playlist) {
     let prefixPlaylist = 'https://www.youtube.com/playlist?list=';
@@ -132,21 +140,21 @@ function noticebrowserPlaylist(message, passdata) {
       // type: `playlist`,
       active: true,
     };
-    noticeAllClient(message, passdata);
+    _notice_All_Client(message, passdata);
   }
 }
 
 function noticebrowserFilenameExists(message, passdata) {
   // console.log(`noticebrowserFilenameExists ...`);
-  noticeAllClient({
+  _notice_All_Client({
     'action': 'notice_browser_filename_exists',
     'info': '',
   }, passdata);
 }
 
 function noticebrowserQueueAdd(message, passdata) {
-  // console.log(`noticedesktopQueueAdd ... `);
-  noticeAllClient({
+  // console.log(`n_desk_QueueAdd ... `);
+  _notice_All_Client({
     'action': 'notice_browser_queue_add',
     'info': 'queue added!',
   }, passdata);
@@ -154,13 +162,46 @@ function noticebrowserQueueAdd(message, passdata) {
 
 //*****************************************************************************
 
-function noticedesktopQueueAdd(message, passdata) {
+/**
+ * 1 click search router
+ *
+ * 2 fetch all author
+ *
+ * 3 fetch author video
+ *
+ *
+ * @param message
+ * @param passdata
+ */
+function n_desk_fetchAuthorVideo(message, passdata) {
+  let {author} = message;
+  if (author) {
+    let message = {
+      action: 'n_desk_',
+      whichone: 'search',
+      dowhat: 'fetchAuthorVideo',
+      info: author
+    };
+    _notice_All_Client(message, passdata);
+  }
+}
+
+function n_desk_fetchAllAuthor(passdata) {
+  let message = {
+    action: 'n_desk_',
+    whichone: 'search',
+    dowhat: 'fetchAllAuthor',
+  };
+  _notice_All_Client(message, passdata);
+}
+
+function n_desk_QueueAdd(message, passdata) {
   let {queue} = message;
-  let {playlist, uuid, title} = queue;
+  let {playlist, title} = queue;
   // console.log(`notice_desktop_queue_add ... `);
   if (queue) {
     let message = {
-      'action': 'notice_desktop_queue_add',
+      'action': 'n_desk_',
       'whichone': 'queue',
       'dowhat': 'queueAdd',
       queue: {
@@ -169,25 +210,25 @@ function noticedesktopQueueAdd(message, passdata) {
         total: 0,
       },
     };
-    noticeAllClient(message, passdata);
+    _notice_All_Client(message, passdata);
   }
 }
 
-function noticedesktopQueueUpdate(message, passdata) {
+function n_desk_QueueUpdate(message, passdata) {
   let {queue} = message;
   // console.log(`notice_desktop_queue_update ... `);
   if (queue) {
     let message = {
-      'action': 'notice_desktop_queue_update',
+      'action': 'n_desk_',
       'whichone': 'queue',
       'dowhat': 'queueUpdate',
       queue,
     };
-    noticeAllClient(message, passdata);
+    _notice_All_Client(message, passdata);
   }
 }
 
-function noticedesktopDownloadInfo(message, passdata) {
+function n_desk_DownloadInfo(message, passdata) {
   let {data, vid, title} = message;
   // console.log(`notice_desktop_download_info ... `);
   if (data) {
@@ -203,7 +244,7 @@ function noticedesktopDownloadInfo(message, passdata) {
 
       // http://localhost:5173/video-list#G_3iX_6sb7M
       let message = {
-        'action': 'notice_desktop_download_info',
+        'action': 'n_desk_',
         'whichone': 'download',
         'dowhat': 'updateInfo',
         'data': {
@@ -212,7 +253,7 @@ function noticedesktopDownloadInfo(message, passdata) {
           'info': first.trim(),
         },
       };
-      noticeAllClient(message, passdata);
+      _notice_All_Client(message, passdata);
 
     } else if (regExpDownloadComplete.test(data)) {
       let mat = data.match(regExpDownloadComplete);
@@ -220,11 +261,11 @@ function noticedesktopDownloadInfo(message, passdata) {
 
       let message = {
         vid,
-        'action': 'notice_desktop_download_info',
+        'action': 'n_desk_',
         'whichone': 'download',
         'dowhat': 'cleanInfo',
       };
-      noticeAllClient(message, passdata);
+      _notice_All_Client(message, passdata);
 
     } else {
 
@@ -233,26 +274,26 @@ function noticedesktopDownloadInfo(message, passdata) {
   }
 }
 
-function getCurrent() {
-  let date = new Date();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-
-  let dateFormat = `${hours}:${minutes}:${seconds}`;
-
-  return dateFormat;
-}
-
-function noticedesktopHeartFirefox(message, passdata) {
-  let {uuid} = message;
+function n_desk_HeartBeat(message, passdata) {
   noticeClientExpectSender({
-    uuid,
-    action: 'notice_desktop_heart_firefox',
+    action: 'n_desk_',
     whichone: 'container',
     dowhat: 'heartFirefox',
     info: `${getCurrent()}`,
   }, passdata);
+}
+
+function getCurrent() {
+  let date = new Date();
+  let month = date.getMonth();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  let milliseconds = date.getMilliseconds();
+
+  let dateFormat = `${hours}:${minutes}:${seconds}:${milliseconds}`;
+
+  return dateFormat;
 }
 
 const daoNotice = {
@@ -260,13 +301,15 @@ const daoNotice = {
   noticebrowserMP4: noticebrowserMP4,
   noticebrowserPlaylist: noticebrowserPlaylist,
 
-  noticedesktopQueueAdd: noticedesktopQueueAdd,
-  noticedesktopQueueUpdate: noticedesktopQueueUpdate,
+  n_desk_fetchAuthorVideo: n_desk_fetchAuthorVideo,
+  n_desk_fetchAllAuthor: n_desk_fetchAllAuthor,
+  n_desk_QueueAdd: n_desk_QueueAdd,
+  n_desk_QueueUpdate: n_desk_QueueUpdate,
   noticebrowserFilenameExists: noticebrowserFilenameExists,
-  noticedesktopHeartFirefox: noticedesktopHeartFirefox,
-  noticedesktopDownloadInfo: noticedesktopDownloadInfo,
+  n_desk_HeartBeat: n_desk_HeartBeat,
+  n_desk_DownloadInfo: n_desk_DownloadInfo,
 
-  noticebrowserSendMessageToNotice: noticebrowserSendMessageToNotice,
+  nb_notice: nb_notice,
 
   noticeDownloadInfo: noticeDownloadInfo,
 };

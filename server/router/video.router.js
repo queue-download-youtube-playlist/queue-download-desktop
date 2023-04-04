@@ -1,3 +1,5 @@
+const {daoVideo} = require('../dao/video.dao');
+const {daoFile} = require('../dao/file.dao');
 const wrapper = function(passdata) {
   const express = require('express');
   const videoRouter = express.Router();
@@ -28,6 +30,16 @@ const wrapper = function(passdata) {
     res.status(200).send();
     await daoVideo.videoPut(req.body, passdata);
   });
+
+  /**
+   * get one Video
+   */
+  videoRouter.get('/check/:vid', async (req, res) => {
+    let {vid} = req.params;
+    let findOne = await daoVideo.videoCheck(vid);
+    res.status(200).send(findOne);
+  });
+
   /**
    * get one Video
    */
@@ -41,7 +53,7 @@ const wrapper = function(passdata) {
    */
   videoRouter.get('/all', async (req, res) => {
     let value = await daoVideo.videoGetAll(null, passdata);
-    res.status(200).send(value)
+    res.status(200).send(value);
   });
 
   /**

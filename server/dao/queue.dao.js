@@ -21,13 +21,13 @@ async function queuePost(message, passdata) {
   let findOne = await table.queueFindOneWhere({playlist});
   if (findOne === null) {
     await table.queueSave(queue);
-    // comnotice.noticebrowserSendMessageToNotice({
+    // comnotice.nb_notice({
     //   text: `create new queue ${title}`,
     // }, passdata);
-    daoNotice.noticedesktopQueueAdd(message, passdata);
+    daoNotice.n_desk_QueueAdd(message, passdata);
     daoNotice.noticebrowserPlaylist(message, passdata);
   } else {
-    // comnotice.noticebrowserSendMessageToNotice({
+    // comnotice.nb_notice({
     //   text: `exists ${title}`,
     // }, passdata);
   }
@@ -68,6 +68,7 @@ async function queueUpdateProgress(message) {
 async function queueGetAll() {
   // let options = {attributes: ['playlist', 'title', 'total', 'progress'],};
   let findAll = await table.queueFind(null);
+
   let columnName = 'playlist';
   return await findAll.reduce(function(map, val) {
     let key = val[columnName];

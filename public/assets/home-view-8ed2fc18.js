@@ -1,0 +1,1 @@
+import{_ as o,o as s,c as t,a as e}from"./index-0c6331df.js";const c={name:"home-view",components:{},props:{}},n={class:"container-fluid"},a=e("div",{class:"row"},[e("div",{class:"col-auto"},[e("span",null,"nothing is here")])],-1),r=[a];function i(_,d,p,l,h,m){return s(),t("div",n,r)}const u=o(c,[["render",i]]);export{u as default};

@@ -1,6 +1,7 @@
 const {daoFile} = require('./file.dao.js');
+const {daoNotice} = require('./notice.dao');
 
-async function moveJPG(message) {
+async function moveJPG(message, passdata) {
   let {vid, uuid} = message;
   if (vid) {
     let message = {
@@ -8,6 +9,11 @@ async function moveJPG(message) {
       uuid,
     };
     await daoFile.moveJPG(message);
+    daoNotice.nb_notice({
+      title: 'image download ok',
+      text: '',
+    }, passdata);
+
   }
 }
 

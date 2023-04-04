@@ -7,20 +7,21 @@ const bodyParser = require('body-parser');
 const {v4: uuidv4} = require('uuid');
 const {dbInitValue} = require('./db/datasource.js');
 const fs = require('fs');
+const {daoNotice} = require('./dao/notice.dao.js');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-const socketList = {};
+const socketMap = {};
 const hostname = 'localhost';
 const port = 16206;
 const url = `http://${hostname}:${port}/`;
 
 //------------------------------------------------------------------------------
 const passdata = {
-  socketList: socketList,
+  socketMap: socketMap,
 };
 
 // step1: init a simple http server
@@ -29,18 +30,15 @@ const server = http.createServer(app);
 const webSocketServer = new WebSocketServer({server});
 webSocketServer.on('connection', (connect) => {
   const uuid = uuidv4();
-  socketList[uuid] = connect;
-  let message = {
-    'action': 'socketinit',
-    'uuid': uuid,
-  };
-  connect.send(JSON.stringify(message)); // init uuid
+  socketMap[uuid] = connect;
+  console.log(`new uuid=\n`, uuid, `\n`);
+
+
   connect.on('message', (data) => { // heart_firefox
     let message = JSON.parse(String(data));
     switch (message['action']) {
       case 'heart_firefox':
-        const {daoNotice} = require('./dao/notice.dao.js');
-        daoNotice.noticedesktopHeartFirefox(message, passdata);
+        daoNotice.n_desk_HeartBeat(message, passdata);
         break;
       case 'login_desktop':
         console.log('desktop connected .....');
@@ -54,7 +52,7 @@ dbInitValue(async (connection) => {
   const homedir = require('os').homedir();
   const path = require('path');
   let tmplocation = path.join(homedir,
-      'AppData', 'Local', 'Temp', 'queue-download-desktop');
+      'AppData', 'Local', 'Temp', 'youtube playlist download queue');
 
   if (findOneBy === null) {
     let savelocation = path.join(homedir, 'Desktop', 'QueueDownload');
@@ -63,9 +61,8 @@ dbInitValue(async (connection) => {
     if (fs.existsSync(savelocation) === false) {
       fs.mkdirSync(savelocation, {recursive: true});
     }
-  }
-  else {
-    fs.rmSync(tmplocation, {recursive:true, force:true})
+  } else {
+    fs.rmSync(tmplocation, {recursive: true, force: true});
   }
   if (fs.existsSync(tmplocation) === false) {
     fs.mkdirSync(tmplocation, {recursive: true});

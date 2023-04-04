@@ -2,10 +2,38 @@ const {readEnvFile} = require('./util/index.common');
 let iconPath = require('path').join('image', 'icon');
 
 const {
-  // BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD,
+  BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD,
   GITHUB_AUTHTOKEN,
 } = readEnvFile('auth.env');
 
+let publishers = [
+  {
+    name: '@electron-forge/publisher-bitbucket',
+    config: {
+      replaceExistingFiles: true,
+      repository: {
+        owner: 'vacantthinker',
+        name: 'queue-download-desktop',
+      },
+      auth: {
+        username: BITBUCKET_USERNAME, // string
+        appPassword: BITBUCKET_APP_PASSWORD, // string
+      },
+    },
+  },
+
+  // {
+  //   name: '@electron-forge/publisher-github',
+  //   config: {
+  //     repository: {
+  //       owner: 'queue-download-youtube-playlist',
+  //       name: 'queue-download-desktop',
+  //     },
+  //     prerelease: true,
+  //     authToken: GITHUB_AUTHTOKEN,
+  //   },
+  // },
+];
 module.exports = {
   packagerConfig: {
     icon: iconPath,
@@ -16,8 +44,10 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       config: {
         setupIcon: `${iconPath}.ico`,
-        fixUpPaths: true,
       },
+    },
+    {
+      name: '@electron-forge/maker-zip',
     },
   ],
   plugins: [
@@ -41,34 +71,6 @@ module.exports = {
       },
     },
   ],
-  publishers: [
-    // {
-    //   name: '@electron-forge/publisher-bitbucket',
-    //   config: {
-    //     // replaceExistingFiles: true,
-    //     repository: {
-    //       owner: 'vacantthinker',
-    //       name: 'queue-download-desktop',
-    //     },
-    //     auth: {
-    //       username: BITBUCKET_USERNAME, // string
-    //       appPassword: BITBUCKET_APP_PASSWORD, // string
-    //     },
-    //   },
-    // },
-
-    {
-      name: '@electron-forge/publisher-github',
-      config: {
-        repository: {
-          owner: 'queue-download-youtube-playlist',
-          name: 'queue-download-desktop',
-        },
-        // prerelease: true,
-        authToken: GITHUB_AUTHTOKEN,
-      },
-    },
-  ],
+  publishers: publishers,
 
 };
-// https://github.com/queue-download-youtube-playlist/queue-download-desktop

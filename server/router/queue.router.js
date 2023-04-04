@@ -19,7 +19,7 @@ const wrapper = function(passdata) {
   });
 
   queueRouter.get('/all', async (req, res) => {
-    let values = await daoQueue.queueGetAll(req.params, passdata);
+    let values = await daoQueue.queueGetAll();
     res.status(200).send(values);
   });
 

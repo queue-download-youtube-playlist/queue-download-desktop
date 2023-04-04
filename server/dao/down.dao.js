@@ -33,7 +33,7 @@ async function step4(queue, passdata) {
             playlist, progress,
           },
         };
-        daoNotice.noticedesktopQueueUpdate(messageNoticeDesktop, passdata);
+        daoNotice.n_desk_QueueUpdate(messageNoticeDesktop, passdata);
       }
 
       let messageQueueDownloadOne = {
@@ -100,7 +100,7 @@ async function downloadMP4UseCMD(video, passdata, callbackwhenclose) {
 
   const coffeeProcess = exec(command);
   coffeeProcess.stdout.on('data', (data) => {
-    daoNotice.noticedesktopDownloadInfo({vid, title, data}, passdata);
+    daoNotice.n_desk_DownloadInfo({vid, title, data}, passdata);
     daoNotice.noticeDownloadInfo(data, passdata);
   });
   coffeeProcess.stderr.on('data', (data) => {
@@ -126,7 +126,7 @@ async function downloadMP4OK(passdata, video, queue, moveFileBoolean) {
   const {vid, filename} = video;
   if (moveFileBoolean) {
     // console.log(`mp4 download finished ............................. `);
-    let filesizeObj = await daoFile.checkFileSize({vid});
+    let filesizeObj = await daoFile.checkOldMP4FileSize({vid});
 
     if (filesizeObj) {
       let {
@@ -136,15 +136,13 @@ async function downloadMP4OK(passdata, video, queue, moveFileBoolean) {
       // console.log(`vid=${vid} size=${filesize}mb`);
 
       if (iszero) {
-        // comnotice.noticebrowserSendMessageToNotice({
-        //   text: `mp4 file size is 0, download again ...`,
-        // }, passdata);
+        daoNotice.nb_notice({
+          title: `download again!!!`,
+          text: `mp4 file size is 0`,
+        }, passdata);
         await daoNotice.noticebrowserMP4({vid, queue}, passdata);
       } else {
 
-        daoNotice.noticebrowserSendMessageToNotice({
-          text: `${filename} download ok ...`,
-        }, passdata);
         // 2 move the downlaoded mp4 file
         await daoFile.moveMP4({vid});
 
@@ -153,10 +151,16 @@ async function downloadMP4OK(passdata, video, queue, moveFileBoolean) {
           vid,
         };
         daoNotice.noticebrowserJPG(message, passdata);
+
+        // notice download ok
+        daoNotice.nb_notice({title: 'download ok', text: `${filename}`,}, passdata);
+        // notice electron all author
+        // daoNotice.n_desk_fetchAllAuthor(passdata)
+
       }
 
     } else {
-      // comnotice.noticebrowserSendMessageToNotice({
+      // comnotice.nb_notice({
       //   text: `cannot find mp4 file, download again ...`,
       // }, passdata);
       await daoNotice.noticebrowserMP4({vid, queue}, passdata);
@@ -179,23 +183,25 @@ async function gotodownloadMP4(message, passdata) {
   let {vid, quality, filename, title} = video;
 
   // file exsits ?
-  let fileExists = await daoFile.checkVidFilenamePathMP4({vid});
-  if (fileExists) {
+  let {exists} = await daoFile.checkNewPathMP4({vid});
+  if (exists) {
     daoNotice.noticebrowserFilenameExists(null, passdata);
-    // comnotice.noticebrowserSendMessageToNotice({
-    //   text: `mp4 exists ${title}`,
-    // }, passdata);
+    daoNotice.nb_notice({
+      title: null,
+      text: `mp4 exists \n${title}`,
+    }, passdata);
 
     await downloadMP4OK(passdata, video, queue, false);
   } else {
     if (passdata.downloading) {
-      // comnotice.noticebrowserSendMessageToNotice({
+      // comnotice.nb_notice({
       //   text: `downloading something , please wait`,
       // }, passdata);
     } else {
-      // comnotice.noticebrowserSendMessageToNotice({
-      //   text: `start downloading ${title}`,
-      // }, passdata);
+      daoNotice.nb_notice({
+        title: 'downloading',
+        text: `${title}`,
+      }, passdata);
 
       // console.log('downloading .................................. ');
       // when downloading update the state

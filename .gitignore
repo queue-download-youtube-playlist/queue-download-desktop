@@ -9,8 +9,13 @@ db.sqlite
 out
 .webpack
 
+#vue
+queue-download-vue
+
 # yarn
 .yarn
+.pnp.cjs
+.pnp.loader.mjs
 yarn.lock
 yarn-error.log
 

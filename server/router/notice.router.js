@@ -12,6 +12,11 @@ const wrapper = function(passdata) {
     daoNotice.noticebrowserPlaylist(req.body, passdata);
   });
 
+  noticeRouter.get('/fetchallauthor', async (req, res) => {
+    res.status(200).send();
+    daoNotice.n_desk_fetchAllAuthor(passdata);
+  });
+
   return noticeRouter;
 };
 

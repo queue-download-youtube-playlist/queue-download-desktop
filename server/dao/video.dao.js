@@ -12,24 +12,27 @@ async function videoPost(message, passdata) {
   video['vlink'] = vlink;
 
   // custom rule --> title
-  video['description'] = `${vlink}\n${author}\n${title}\n`;
+  video['description'] = `${vlink}\n${author}\n`;
 
   let reg = /[<>:"/\\|?*]/g;
   video['filename'] = title.replace(reg, ' ');
 
   let findObj = await table.videoFindOneWhere({vid});
   if (findObj) { // find one update it
-    // comnotice.noticebrowserSendMessageToNotice({
+    // comnotice.nb_notice({
     //   text: `video id exists ${title}`,
     // }, passdata);
-
+    await table.videoUpdate(video, {vid});
   } else {
     // no found, create it
     await table.videoSave(video);
-    // comnotice.noticebrowserSendMessageToNotice({
-    //   text: `create new video ${title}`,
-    // }, passdata);
-    // console.log(`video.dao.js videoPost create`);
+    daoNotice.nb_notice({
+      title: `new video data`,
+      text: `${title}`,
+    }, passdata);
+    console.log(`video.dao.js videoPost create`);
+
+    daoNotice.n_desk_fetchAuthorVideo({author}, passdata);
   }
 
 }
@@ -54,12 +57,12 @@ async function videoDelete(message, passdata) {
     if (result) {
     }
     await _videodelete(vid);
-    // comnotice.noticebrowserSendMessageToNotice({
+    // comnotice.nb_notice({
     //   text: `delete ok`,
     // }, passdata);
   } else {
     await _videodelete(vid);
-    // comnotice.noticebrowserSendMessageToNotice({
+    // comnotice.nb_notice({
     //   text: `delete ok`,
     // }, passdata);
   }
@@ -89,9 +92,26 @@ async function videoPut(message, passdata) {
 
 // let attributes = ['vid', 'author', 'title', 'quality', 'description', 'vlink'];
 
+/**
+ *
+ * @param vid {String}
+ * @returns {Promise<*>}
+ */
+async function videoCheck(vid) {
+  let findOne = await table.videoFindOneWhere({vid});
+  console.log(`findOne=\n`, findOne, `\n`);
+
+  if (findOne === null) {
+    return false;
+  } else {
+    let {exists} = await daoFile.checkNewPathMP4({vid});
+    return exists;
+  }
+}
+
 async function videoGetAll() {
   // console.log(`video.dao.js videoGetAll`);
-  let findAll = await table.videoFind();
+  let findAll = await table.videoFind(null);
   let columnName = 'vid';
   return findAll.reduce(function(map, obj) {
     let key = obj[columnName];
@@ -119,7 +139,7 @@ async function videoGetByVid(message) {
 }
 
 async function videoGetAllAuthor() {
-  const values = await table.videoFind();
+  const values = await table.videoFind(null);
   let columnName = 'author';
   return Array.from(values).reduce((map, value) => {
     const author = value[columnName];
@@ -143,6 +163,8 @@ const daoVideo = {
   videoPost: videoPost,
   videoDelete: videoDelete,
   videoPut: videoPut,
+
+  videoCheck: videoCheck,
   videoGetAll: videoGetAll,
   videoGetAllByLikeTitle: videoGetAllByLikeTitle,
 
