@@ -29,7 +29,7 @@ download single youtube thumbnail.
 
 ### step1:
 
-download and install windows app
+download windows portable app
 
 [downloads](https://bitbucket.org/vacantthinker/queue-download-desktop/downloads/)
 
