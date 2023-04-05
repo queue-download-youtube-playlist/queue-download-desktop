@@ -29,15 +29,14 @@ download single youtube thumbnail.
 
 ### step1:
 
-download windows portable app
+[download](./releases) windows portable app
 
-[downloads](https://bitbucket.org/vacantthinker/queue-download-desktop/downloads/)
+youtube_playlist_download_queue-win32-x64-x.x.xx.zip
 
 ### step2:
 
 install [firefox extension](https://addons.mozilla.org/zh-CN/firefox/addon/ytb-playlist-download-queue/)
 
-that's all.
 
 
 ---
@@ -50,31 +49,23 @@ that's all.
 
 ### download video
 
-find a youtube video [https://www.youtube.com/watch?v=id-6SkQzf3E](https://www.youtube.com/watch?v=id-6SkQzf3E)
 
 ![downlaod_video.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/downlaod_video.png)
 
-in browser context menu,
-
-click "download video", it will auto download youtube video.
+click "download video"
 
 ### download playlist
 
-find a youtube playlist,
+![add_to_queue.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/add_to_queue.png)
 
-you will find a icon ![add_to_queue.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/add_to_queue.png)
 
-move your mouse on it, show you "add to queue"
+click it, wait the action finished.
 
-click it, it will auto add this playlist to desktop app,
-
-and auto create new tab, collect all video id in this playlist for desktop app.
-
-once collect finished,
-
-you need go to desktop app,
+you need go to windows portable app,
 
 click the "download all video", it will download all youtube video.
+
+![download all video](./image/download_all_video.png)
 
 ---
 
