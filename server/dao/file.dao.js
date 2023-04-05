@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const {table} = require('../db/util.typeorm.js');
-const {daoNotice} = require('./notice.dao');
 
 const endsJPG = `.jpg`;
 const endsMP4 = `.mp4`;
@@ -108,7 +107,7 @@ async function moveJPG(video) {
 }
 
 function getPatharia2c() {
-  return path.join(__dirname, 'aria2_win64_build1', `aria2c.exe`);
+  return path.join(__dirname, );
 }
 
 async function checkUnnecessaryMP4() {
@@ -182,7 +181,6 @@ const daoFile = {
   checkUnnecessaryMP4: checkUnnecessaryMP4,
 
   checkOldMP4FileSize: checkOldMP4FileSize,
-  getPatharia2c: getPatharia2c,
 };
 
 module.exports = {

@@ -2,7 +2,7 @@ const {geneTypeormAll} = require('./util/index.typeorm');
 const {geneUtilExpressJs} = require('./util/index.express');
 const {readPackageJson, execSync} = require('./util/index.electron.vue');
 
-// geneTypeormAll();
+geneTypeormAll();
 // geneUtilExpressJs();
 
 // npmRunMakeOpenOutSquirrel();
@@ -11,4 +11,4 @@ const {readPackageJson, execSync} = require('./util/index.electron.vue');
 // execSync(`npm run rebuild`)
 // npmRunStart()
 
-execSync(`start "" node server/app.js`)
+// execSync(`start "" node server/app.js`)

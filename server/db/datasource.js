@@ -6,7 +6,7 @@ const {getEntitySchemaList} = require('./util.datasource.js');
 const entities = getEntitySchemaList();
 const dataSource = new DataSource({
   type: 'better-sqlite3',
-  database: 'C:\\Users\\littl\\AppData\\Roaming\\youtube playlist download queue\\dbsqlite3\\db.sqlite',
+  database: 'C:\\Users\\littl\\AppData\\Roaming\\youtube_playlist_download_queue\\dbsqlite3\\db.sqlite',
   synchronize: true,
   logging: false,
   entities,

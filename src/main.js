@@ -1,5 +1,6 @@
 const {app, BrowserWindow} = require('electron');
 const path = require('path');
+const {startExpress} = require('../server/app');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -8,7 +9,8 @@ if (require('electron-squirrel-startup')) {
 // auto update electron app
 require('update-electron-app')();
 // express js a
-const {url} = require('../server/app');
+
+startExpress()
 
 const createWindow = () => {
   const {width, height} = require('electron').
@@ -18,6 +20,7 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     icon: path.join('image', 'icon.ico'),
+    title: "youtube playlist download queue",
     minWidth: width * number,
     minHeight: height * number,
     center: true,
@@ -33,9 +36,7 @@ const createWindow = () => {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(() => {
-
-  });
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
   require('electron').session.defaultSession.webRequest.
       onHeadersReceived((details, callback) => {

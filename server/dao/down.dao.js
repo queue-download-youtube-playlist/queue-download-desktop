@@ -25,8 +25,8 @@ async function step4(queue, passdata) {
         'queue': {playlist},
       };
       let progress = await daoQueue.queueUpdateProgress(
-          messageQueueUpdateProgress,
-          passdata);
+        messageQueueUpdateProgress,
+        passdata);
       if (progress) {
         let messageNoticeDesktop = {
           'queue': {
@@ -64,19 +64,11 @@ async function downloadMP4UseCMD(video, passdata, callbackwhenclose) {
   let fileNameMP4 = `${vid}${endsMP4}`;
 
   let tmpDir = await daoFile.getConfigTmplocation();
-  // const arr2 = [
-  //   `start`,
-  //   `"download ${filename}"`,
-  //   `/MIN`,
-  //   `wget`,
-  //   `-P ${tmpDir}`,
-  //   `-O ${fileNameMP4}`,
-  //   `${downlink}`,
-  //
-  // ];
-  // let command = arr2.reduce((str, val) => str.concat(' ').concat(val));
 
-  const aria2c = daoFile.getPatharia2c();
+  let aria2c = null;
+  // aria2c = path.join(process.resourcesPath, 'aria2c.exe');
+  aria2c = path.join(passdata.dirAria2, 'aria2c.exe');
+
   const arr = [
     `start`,
     `"downloading... ${filename}"`,
@@ -153,7 +145,8 @@ async function downloadMP4OK(passdata, video, queue, moveFileBoolean) {
         daoNotice.noticebrowserJPG(message, passdata);
 
         // notice download ok
-        daoNotice.nb_notice({title: 'download ok', text: `${filename}`,}, passdata);
+        daoNotice.nb_notice({title: 'download ok', text: `${filename}`},
+          passdata);
         // notice electron all author
         // daoNotice.n_desk_fetchAllAuthor(passdata)
 

@@ -1,5 +1,3 @@
-const {daoVideo} = require('../dao/video.dao');
-const {daoFile} = require('../dao/file.dao');
 const wrapper = function(passdata) {
   const express = require('express');
   const videoRouter = express.Router();

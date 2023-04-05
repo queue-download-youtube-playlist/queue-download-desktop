@@ -1,6 +1,6 @@
-const {readEnvFile} = require('./util/index.common');
 let iconPath = require('path').join('image', 'icon');
 
+const {readEnvFile} = require('./util/index.common');
 const {
   BITBUCKET_USERNAME, BITBUCKET_APP_PASSWORD,
   GITHUB_AUTHTOKEN,
@@ -21,56 +21,52 @@ let publishers = [
       },
     },
   },
-
-  // {
-  //   name: '@electron-forge/publisher-github',
-  //   config: {
-  //     repository: {
-  //       owner: 'queue-download-youtube-playlist',
-  //       name: 'queue-download-desktop',
-  //     },
-  //     prerelease: true,
-  //     authToken: GITHUB_AUTHTOKEN,
-  //   },
-  // },
+  {
+    name: '@electron-forge/publisher-github',
+    config: {
+      repository: {
+        owner: 'queue-download-youtube-playlist',
+        name: 'queue-download-desktop',
+      },
+      prerelease: true,
+      authToken: GITHUB_AUTHTOKEN,
+    },
+  },
 ];
+let plugins = [
+  {
+    name: '@electron-forge/plugin-webpack',
+    config: {
+      mainConfig: './webpack.main.config.js',
+      renderer: {
+        config: './webpack.renderer.config.js',
+        entryPoints: [
+          {
+            html: './public/index.html',
+            js: './public/renderer.js',
+            name: 'main_window',
+            preload: {
+              js: './src/preload.js',
+            },
+          },
+        ],
+      },
+    },
+  },
+];
+
 module.exports = {
   packagerConfig: {
     icon: iconPath,
+    // extraResource: './resources/aria2_win64_build1',
   },
   rebuildConfig: {},
   makers: [
     {
-      name: '@electron-forge/maker-squirrel',
-      config: {
-        setupIcon: `${iconPath}.ico`,
-      },
-    },
-    {
       name: '@electron-forge/maker-zip',
     },
   ],
-  plugins: [
-    {
-      name: '@electron-forge/plugin-webpack',
-      config: {
-        mainConfig: './webpack.main.config.js',
-        renderer: {
-          config: './webpack.renderer.config.js',
-          entryPoints: [
-            {
-              html: './public/index.html',
-              js: './public/renderer.js',
-              name: 'main_window',
-              preload: {
-                js: './src/preload.js',
-              },
-            },
-          ],
-        },
-      },
-    },
-  ],
+  plugins: plugins,
   publishers: publishers,
 
 };
