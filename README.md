@@ -1,29 +1,11 @@
 
----
-
-# it's open source project.
-
-### code is here
-
-[https://github.com/orgs/queue-download-youtube-playlist/](https://github.com/orgs/queue-download-youtube-playlist/repositories)
-
-### framework
-
-```text
-electron js + express js + vue js
-```
-
----
-
 # what is this?
 
-youtube playlist download queue.
+ - download youtube playlist.
 
-you can download youtube playlist.
+ - download one youtube video.
 
-download single youtube video.
-
-download single youtube thumbnail.
+ - download one youtube thumbnail.
 
 # how to install?
 
@@ -43,11 +25,13 @@ install [firefox extension](https://addons.mozilla.org/zh-CN/firefox/addon/ytb-p
 
 # how to use?
 
-## first, keep desktop app running.
+ - step1: keep windows portable app running.
 
-## second, keep firefox extension running. (order is important)
+ - step2: keep firefox extension running.
 
-### download video
+ - step3: check windows portable app, if the time is ticking. you're success.
+
+### download one video
 
 
 ![downlaod_video.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/downlaod_video.png)
@@ -59,11 +43,9 @@ click "download video"
 ![add_to_queue.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/add_to_queue.png)
 
 
-click it, wait the action finished.
+click it, waiting...
 
-you need go to windows portable app,
-
-click the "download all video", it will download all youtube video.
+check the windows portable app "Playlist" area,
 
 ![download all video](./image/download_all_video.png)
 
