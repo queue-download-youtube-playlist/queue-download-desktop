@@ -7,6 +7,8 @@
 
  - download one youtube thumbnail.
 
+---
+
 # how to install?
 
 ### step1:
