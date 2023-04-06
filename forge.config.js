@@ -57,8 +57,7 @@ let plugins = [
 
 module.exports = {
   packagerConfig: {
-    icon: iconPath,
-    // extraResource: './resources/aria2_win64_build1',
+    icon: iconPath
   },
   rebuildConfig: {},
   makers: [

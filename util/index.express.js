@@ -79,7 +79,7 @@ function getIPAddress() {
 
 module.exports = {
   setupRouterList: setupRouterList,
-  getIPAddress: getIPAddress
+  getIPAddress: getIPAddress,
 };
 
 `;

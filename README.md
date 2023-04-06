@@ -36,13 +36,13 @@ install [firefox extension](https://addons.mozilla.org/zh-CN/firefox/addon/ytb-p
 ### download one video
 
 
-![downlaod_video.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/downlaod_video.png)
+![downlaod_video.png](./image/downlaod_video.png)
 
 click "download video"
 
-### download playlist
+### download playlist [unstable]
 
-![add_to_queue.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b62b9f4a2b8e7f2dc5c1cba0a0c5fb0a4afabebc/image/add_to_queue.png)
+![add_to_queue.png](./image/add_to_queue.png)
 
 
 click it, waiting...

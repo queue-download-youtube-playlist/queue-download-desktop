@@ -52,6 +52,10 @@ async function step4(queue, passdata) {
   }
 }
 
+function getAria2EXE() {
+  return path.join(__dirname, 'aria2_win64_build1', 'aria2c.exe')
+}
+
 /**
  *
  * @param video {Object:{video}}
@@ -65,9 +69,7 @@ async function downloadMP4UseCMD(video, passdata, callbackwhenclose) {
 
   let tmpDir = await daoFile.getConfigTmplocation();
 
-  let aria2c = null;
-  // aria2c = path.join(process.resourcesPath, 'aria2c.exe');
-  aria2c = path.join(passdata.dirAria2, 'aria2c.exe');
+  let aria2c = getAria2EXE()
 
   const arr = [
     `start`,
@@ -180,8 +182,8 @@ async function gotodownloadMP4(message, passdata) {
   if (exists) {
     daoNotice.noticebrowserFilenameExists(null, passdata);
     daoNotice.nb_notice({
-      title: null,
-      text: `mp4 exists \n${title}`,
+      title: 'dont need download',
+      text: `exists \n${title}`,
     }, passdata);
 
     await downloadMP4OK(passdata, video, queue, false);

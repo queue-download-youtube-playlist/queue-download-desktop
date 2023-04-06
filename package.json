@@ -1,7 +1,7 @@
 {
   "name": "queue-download-desktop",
   "productName": "youtube_playlist_download_queue",
-  "version": "1.0.15",
+  "version": "1.0.15.1",
   "description": "youtube playlist download one by one, youtube video download, youtube thumbnail download ",
   "main": ".webpack/main",
   "repository": {
@@ -11,8 +11,11 @@
   "scripts": {
     "git_push": "git add . && git commit -m 'update' && git push --force",
     "git_push_force": "git push --force",
+
+    "npm_install": "npm install",
+    "yarn_install": "yarn install",
+
     "node_appjs": "node server/app.js",
-    "yarn_install": "yarn",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -26,13 +29,13 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@electron-forge/cli": "6.1.1",
-    "@electron-forge/maker-zip": "6.1.1",
-    "@electron-forge/plugin-webpack": "6.1.1",
-    "@electron-forge/publisher-bitbucket": "6.1.1",
-    "@electron-forge/publisher-github": "6.1.1",
+    "@electron-forge/cli": "6.1.0",
+    "@electron-forge/maker-zip": "6.1.0",
+    "@electron-forge/plugin-webpack": "6.1.0",
+    "@electron-forge/publisher-bitbucket": "6.1.0",
+    "@electron-forge/publisher-github": "6.1.0",
     "@electron/rebuild": "^3.2.10",
-    "@types/node": "18.15.11",
+
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
     "css-loader": "^6.0.0",
     "electron": "23.2.0",

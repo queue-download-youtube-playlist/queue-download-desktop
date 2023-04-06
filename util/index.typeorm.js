@@ -210,10 +210,16 @@ function geneDataSourceJs(
 const {DataSource} = require('typeorm');
 const {getEntitySchemaList} = require('./util.datasource.js');
 
+const path = require('path');
+const homedir = require('os').homedir();
+let dbLocation = path.join(homedir,
+  'AppData', 'Roaming', 'youtube_playlist_download_queue',
+  'dbsqlite3', 'db.sqlite');
+
 const entities = getEntitySchemaList();
 const dataSource = new DataSource({
   type: 'better-sqlite3',
-  database: '${dbSqlite3}',
+  database: dbLocation,
   synchronize: true,
   logging: false,
   entities,

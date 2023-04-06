@@ -1,14 +1,17 @@
-const express = require('express');
-const {WebSocketServer} = require('ws');
-const http = require('http');
+'use strict';
 
+const fs = require('fs');
+const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const {WebSocketServer} = require('ws');
+const http = require('http');
 const {v4: uuidv4} = require('uuid');
+
 const {dbInitValue} = require('./db/datasource.js');
-const fs = require('fs');
-const {daoNotice} = require('./dao/notice.dao.js');
-const path = require('path');
+const {setupRouterList} = require('./util.express');
+
+//------------------------------------------------------------
 
 const app = express();
 app.use(cors());
@@ -24,7 +27,6 @@ const url = `http://${hostname}:${port}/`;
 const passdata = {
   socketMap: socketMap,
 };
-require('./util.express').setupRouterList(app, passdata);
 
 // step1: init a simple http server
 const server = http.createServer(app);
@@ -39,6 +41,7 @@ webSocketServer.on('connection', (connect) => {
     let message = JSON.parse(String(data));
     switch (message['action']) {
       case 'heart_firefox':
+        const {daoNotice} = require('./dao/notice.dao.js');
         daoNotice.n_desk_HeartBeat(message, passdata);
         break;
       case 'login_desktop':
@@ -48,25 +51,13 @@ webSocketServer.on('connection', (connect) => {
   });
 });
 
-dbInitValue(async (connection) => {
+async function initialDir(connection) {
   let findOneBy = await connection.getRepository('config')
     .findOneBy({id: 1});
   const homedir = require('os').homedir();
   const path = require('path');
   let tmplocation = path.join(homedir,
-    'AppData', 'Local', 'Temp', 'youtube playlist download queue');
-
-  // C:\Users\xxx\AppData\Roaming\youtube playlist download queue
-  let aria2DirLocation = path.join(homedir,
-    'AppData', 'Roaming', 'youtube_playlist_download_queue',
-    'aria2_win64_build1');
-  let sourceAria2 = path.join(process.cwd(), 'resources', 'aria2_win64_build1');
-
-  // passdata['dirAria2'] = aria2DirLocation
-  passdata['dirAria2'] = sourceAria2
-  // if (fs.existsSync(aria2DirLocation) === false) {
-  //   fs.cpSync(sourceAria2, aria2DirLocation, {recursive: true, force: true});
-  // }
+    'AppData', 'Local', 'Temp', 'youtube_playlist_download_queue');
 
   if (findOneBy === null) {
     let savelocation = path.join(homedir, 'Desktop', 'QueueDownload');
@@ -81,16 +72,18 @@ dbInitValue(async (connection) => {
   if (fs.existsSync(tmplocation) === false) {
     fs.mkdirSync(tmplocation, {recursive: true});
   }
+}
 
+dbInitValue(async (connection) => {
+  await initialDir(connection);
 });
 
-server.listen(port, async () => {
+setupRouterList(app, passdata);
+server.listen(port, () => {
   console.log(url);
   console.log(`started ${hostname} ${port} --- with websocket`);
 });
 
 module.exports = {
-  startExpress: () => {
-
-  },
+  expressStart: 'expressStart',
 };

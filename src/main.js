@@ -1,6 +1,5 @@
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, screen, session} = require('electron');
 const path = require('path');
-const {startExpress} = require('../server/app');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -8,19 +7,16 @@ if (require('electron-squirrel-startup')) {
 }
 // auto update electron app
 require('update-electron-app')();
-// express js a
-
-startExpress()
+// express js server
+let {expressStart} = require('../server/app');
 
 const createWindow = () => {
-  const {width, height} = require('electron').
-      screen.
-      getPrimaryDisplay().workArea;
+  const {width, height} = screen.getPrimaryDisplay().workArea;
   const number = 0.6;
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     icon: path.join('image', 'icon.ico'),
-    title: "youtube playlist download queue",
+
     minWidth: width * number,
     minHeight: height * number,
     center: true,
@@ -36,17 +32,19 @@ const createWindow = () => {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  require('electron').session.defaultSession.webRequest.
-      onHeadersReceived((details, callback) => {
-        callback({
-          responseHeaders: {
-            ...details.responseHeaders,
-            'Content-Security-Policy': ['*'],
-          },
-        });
+  session
+    .defaultSession
+    .webRequest
+    .onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': ['*'],
+        },
       });
+    });
 
   // Open the DevTools.
 //  mainWindow.webContents.openDevTools();

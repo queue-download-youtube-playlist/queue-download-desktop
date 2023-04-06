@@ -3,10 +3,16 @@
 const {DataSource} = require('typeorm');
 const {getEntitySchemaList} = require('./util.datasource.js');
 
+const path = require('path');
+const homedir = require('os').homedir();
+let dbLocaltion = path.join(homedir,
+  'AppData', 'Roaming', 'youtube_playlist_download_queue',
+  'dbsqlite3', 'db.sqlite');
+
 const entities = getEntitySchemaList();
 const dataSource = new DataSource({
   type: 'better-sqlite3',
-  database: 'C:\\Users\\littl\\AppData\\Roaming\\youtube_playlist_download_queue\\dbsqlite3\\db.sqlite',
+  database: dbLocaltion,
   synchronize: true,
   logging: false,
   entities,
