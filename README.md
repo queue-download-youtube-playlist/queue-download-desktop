@@ -36,20 +36,20 @@ install [firefox extension](https://addons.mozilla.org/zh-CN/firefox/addon/ytb-p
 ### download one video
 
 
-![downlaod_video.png](./image/downlaod_video.png)
+![downlaod_video.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b02dca4b31ce6fb70f1f6009479fd1bedcae2185/image/downlaod_video.png)
 
 click "download video"
 
 ### download playlist [unstable]
 
-![add_to_queue.png](./image/add_to_queue.png)
+![add_to_queue.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b02dca4b31ce6fb70f1f6009479fd1bedcae2185/image/add_to_queue.png)
 
 
 click it, waiting...
 
 check the windows portable app "Playlist" area,
 
-![download all video](./image/download_all_video.png)
+![download all video](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b02dca4b31ce6fb70f1f6009479fd1bedcae2185/image/download_all_video.png)
 
 ---
 
