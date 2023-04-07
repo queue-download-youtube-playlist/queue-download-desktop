@@ -41,6 +41,21 @@ function findPathTarget() {
 }
 
 /**
+ *
+ * @param sampleString{String}
+ */
+function upcaseFirstLetter(sampleString) {
+  let split = sampleString.split('');
+  let first = split[0].toUpperCase()
+  split[0] = first
+
+  let reduce = split.reduce((result, value)=>{
+    return result.concat(value)
+  },'');
+  return reduce
+}
+
+/**
  * gene util.typeorm.js file
  * @param pathTarget
  */
@@ -54,13 +69,15 @@ function geneUtilTypeormJs(pathTarget = null) {
     const mat = filename.match(reg);
     const entityName = mat[0]; // eg: config --> config.entity.js
 
+    // const upcaseEntityName = upcaseFirstLetter(entityName)
+
     const line =
         `
   // ${entityName}.entity.js
   // **************************************************************************
   /**
    * ${entityName} repo
-   * @returns {Promise<*>}
+   * @returns {Promise<Repository>}
    */
   ${entityName}Repo: async () => {
     return await dataSource.getRepository('${entityName}');
@@ -68,13 +85,13 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * save ${entityName}
    * @param entityObj
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
-  ${entityName}Save: async (entityObj) => {
-    return await dataSource.getRepository('${entityName}').save(entityObj);
+  ${entityName}Insert: async (entityObj) => {
+    await dataSource.getRepository('${entityName}').insert(entityObj);
   },
   /**
-   * delete ${entityName}
+   * {id: 1}
    * @param options
    * @returns {Promise<*>}
    */
@@ -82,10 +99,10 @@ function geneUtilTypeormJs(pathTarget = null) {
     return await dataSource.getRepository('${entityName}').delete(options);
   },
   /**
-   * update ${entityName}
+   * {id: 1}
    * @param entityNew
    * @param options
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
   ${entityName}Update: async (entityNew, options) => {
     const findObj = await dataSource.getRepository('${entityName}').findOneBy(options);
@@ -95,7 +112,7 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   ${entityName}FindOneWhere: async (options) => {
     return await dataSource.getRepository('${entityName}').findOneBy(options);
@@ -103,7 +120,7 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   ${entityName}FindOne: async (options) => {
     return await dataSource.getRepository('${entityName}').findOne(options);
@@ -111,7 +128,7 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * null or {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   ${entityName}Find: async (options) => {
     if (options === null) {
@@ -123,7 +140,7 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   ${entityName}FindWhere: async (options) => {
     return await dataSource.getRepository('${entityName}').findBy(options);
@@ -131,7 +148,7 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * {name: 'mari'} to {name: Like('%mari%')}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   ${entityName}FindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -167,62 +184,28 @@ module.exports = {
 }
 
 /**
- *
- * @returns
- */
-function getAppPathDbSqlite3() {
-
-  const platform = os.platform();
-  console.log(`platform=\n`, platform, `\n`);
-  if (platform.includes('win32')) {
-    const homedir = os.homedir();
-    const {productName: dirName} = readPackageJson();
-    const pathUserData = path.join(homedir,
-        'AppData', 'Roaming', dirName, 'dbsqlite3');
-
-    if (fs.existsSync(pathUserData) === false) {
-      fs.mkdirSync(pathUserData);
-    }
-
-    const dbSqlite3 = path.join(pathUserData,
-        stringList.string_db_sqlite3);
-    console.log(`dbSqlite3=\n`, dbSqlite3, `\n`);
-
-    return dbSqlite3.replace(/\\/g, '\\\\');
-  } else {
-    return null;
-  }
-}
-
-/**
  * generator datasource.js file
  * @param pathTarget
  */
 function geneDataSourceJs(
     pathTarget = null,
 ) {
-  const dbSqlite3 = getAppPathDbSqlite3();
-  console.log(`dbSqlite3=\n`, dbSqlite3, `\n`);
 
   const text =
       `'use strict';
       
 const {DataSource} = require('typeorm');
-const {getEntitySchemaList} = require('./util.datasource.js');
+const {
+  getEntitySchemaList, 
+  getDatabasePath
+} = require('./util.datasource.js');
 
-const path = require('path');
-const homedir = require('os').homedir();
-let dbLocation = path.join(homedir,
-  'AppData', 'Roaming', 'youtube_playlist_download_queue',
-  'dbsqlite3', 'db.sqlite');
-
-const entities = getEntitySchemaList();
 const dataSource = new DataSource({
   type: 'better-sqlite3',
-  database: dbLocation,
+  database: getDatabasePath(),
   synchronize: true,
   logging: false,
-  entities,
+  entities: getEntitySchemaList(),
 });
 
 dataSource.initialize().then(() => {
@@ -282,16 +265,26 @@ function geneUtilDataSourceJs(
   const text =
       `'use strict';
       
-const {EntitySchema} = require('typeorm');
-
 function getEntitySchemaList() {
+  const {EntitySchema} = require('typeorm');
   const entities = [];
+
 ${reduce}
   return entities;
 }
 
+function getDatabasePath() {
+  const path = require('path');
+  const homedir = require('os').homedir();
+  let dbLocaltion = path.join(homedir,
+    'AppData', 'Roaming', 'youtube_playlist_download_queue',
+    'dbsqlite3', 'db.sqlite');
+  return dbLocaltion;
+}
+
 module.exports = {
   getEntitySchemaList: getEntitySchemaList,
+  getDatabasePath: getDatabasePath,
 };
 `;
 

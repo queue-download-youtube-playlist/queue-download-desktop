@@ -5,16 +5,16 @@ const wrapper = function(passdata) {
 
   noticeRouter.post('/mp4', async (req, res) => {
     res.status(200).send();
-    await daoNotice.noticebrowserMP4(req.body, passdata);
+    await daoNotice.notice_browser_mp4(req.body, passdata);
   });
-  noticeRouter.post('/playlist/', (req, res) => {
+  noticeRouter.post('/playlist/', async (req, res) => {
     res.status(200).send();
-    daoNotice.noticebrowserPlaylist(req.body, passdata);
+    daoNotice.notice_browser_playlist(req.body, passdata);
   });
 
   noticeRouter.get('/fetchallauthor', async (req, res) => {
     res.status(200).send();
-    daoNotice.n_desk_fetchAllAuthor(passdata);
+    daoNotice.notice_deskapp_fetch_all_author(passdata);
   });
 
   return noticeRouter;

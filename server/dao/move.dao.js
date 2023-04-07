@@ -9,10 +9,10 @@ async function moveJPG(message, passdata) {
       uuid,
     };
     await daoFile.moveJPG(message);
-    daoNotice.nb_notice({
-      title: 'image download ok',
-      text: '',
-    }, passdata);
+    // daoNotice.notice_browser_firefox_notice({
+    //   title: 'image download ok',
+    //   text: '',
+    // }, passdata);
 
   }
 }

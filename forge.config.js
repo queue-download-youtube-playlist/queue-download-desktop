@@ -13,7 +13,7 @@ let publishers = [
       replaceExistingFiles: true,
       repository: {
         owner: 'vacantthinker',
-        name: 'queue-download-desktop',
+        name: 'playlist-download-desktop',
       },
       auth: {
         username: BITBUCKET_USERNAME, // string
@@ -25,8 +25,8 @@ let publishers = [
     name: '@electron-forge/publisher-github',
     config: {
       repository: {
-        owner: 'queue-download-youtube-playlist',
-        name: 'queue-download-desktop',
+        owner: 'playlist-download-youtube-playlist',
+        name: 'playlist-download-desktop',
       },
       prerelease: true,
       authToken: GITHUB_AUTHTOKEN,

@@ -9,7 +9,7 @@ const table = {
   // **************************************************************************
   /**
    * config repo
-   * @returns {Promise<*>}
+   * @returns {Promise<Repository>}
    */
   configRepo: async () => {
     return await dataSource.getRepository('config');
@@ -17,13 +17,13 @@ const table = {
   /**
    * save config
    * @param entityObj
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
-  configSave: async (entityObj) => {
-    return await dataSource.getRepository('config').save(entityObj);
+  configInsert: async (entityObj) => {
+    await dataSource.getRepository('config').insert(entityObj);
   },
   /**
-   * delete config
+   * {id: 1}
    * @param options
    * @returns {Promise<*>}
    */
@@ -31,10 +31,10 @@ const table = {
     return await dataSource.getRepository('config').delete(options);
   },
   /**
-   * update config
+   * {id: 1}
    * @param entityNew
    * @param options
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
   configUpdate: async (entityNew, options) => {
     const findObj = await dataSource.getRepository('config').findOneBy(options);
@@ -44,7 +44,7 @@ const table = {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   configFindOneWhere: async (options) => {
     return await dataSource.getRepository('config').findOneBy(options);
@@ -52,7 +52,7 @@ const table = {
   /**
    * {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   configFindOne: async (options) => {
     return await dataSource.getRepository('config').findOne(options);
@@ -60,7 +60,7 @@ const table = {
   /**
    * null or {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   configFind: async (options) => {
     if (options === null) {
@@ -72,7 +72,7 @@ const table = {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   configFindWhere: async (options) => {
     return await dataSource.getRepository('config').findBy(options);
@@ -80,7 +80,7 @@ const table = {
   /**
    * {name: 'mari'} to {name: Like('%mari%')}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   configFindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -94,7 +94,7 @@ const table = {
   // **************************************************************************
   /**
    * queue repo
-   * @returns {Promise<*>}
+   * @returns {Promise<Repository>}
    */
   queueRepo: async () => {
     return await dataSource.getRepository('queue');
@@ -102,13 +102,13 @@ const table = {
   /**
    * save queue
    * @param entityObj
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
-  queueSave: async (entityObj) => {
-    return await dataSource.getRepository('queue').save(entityObj);
+  queueInsert: async (entityObj) => {
+    await dataSource.getRepository('queue').insert(entityObj);
   },
   /**
-   * delete queue
+   * {id: 1}
    * @param options
    * @returns {Promise<*>}
    */
@@ -116,10 +116,10 @@ const table = {
     return await dataSource.getRepository('queue').delete(options);
   },
   /**
-   * update queue
+   * {id: 1}
    * @param entityNew
    * @param options
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
   queueUpdate: async (entityNew, options) => {
     const findObj = await dataSource.getRepository('queue').findOneBy(options);
@@ -129,7 +129,7 @@ const table = {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   queueFindOneWhere: async (options) => {
     return await dataSource.getRepository('queue').findOneBy(options);
@@ -137,7 +137,7 @@ const table = {
   /**
    * {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   queueFindOne: async (options) => {
     return await dataSource.getRepository('queue').findOne(options);
@@ -145,7 +145,7 @@ const table = {
   /**
    * null or {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   queueFind: async (options) => {
     if (options === null) {
@@ -157,7 +157,7 @@ const table = {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   queueFindWhere: async (options) => {
     return await dataSource.getRepository('queue').findBy(options);
@@ -165,7 +165,7 @@ const table = {
   /**
    * {name: 'mari'} to {name: Like('%mari%')}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   queueFindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -179,7 +179,7 @@ const table = {
   // **************************************************************************
   /**
    * task repo
-   * @returns {Promise<*>}
+   * @returns {Promise<Repository>}
    */
   taskRepo: async () => {
     return await dataSource.getRepository('task');
@@ -187,13 +187,13 @@ const table = {
   /**
    * save task
    * @param entityObj
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
-  taskSave: async (entityObj) => {
-    return await dataSource.getRepository('task').save(entityObj);
+  taskInsert: async (entityObj) => {
+    await dataSource.getRepository('task').insert(entityObj);
   },
   /**
-   * delete task
+   * {id: 1}
    * @param options
    * @returns {Promise<*>}
    */
@@ -201,10 +201,10 @@ const table = {
     return await dataSource.getRepository('task').delete(options);
   },
   /**
-   * update task
+   * {id: 1}
    * @param entityNew
    * @param options
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
   taskUpdate: async (entityNew, options) => {
     const findObj = await dataSource.getRepository('task').findOneBy(options);
@@ -214,7 +214,7 @@ const table = {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   taskFindOneWhere: async (options) => {
     return await dataSource.getRepository('task').findOneBy(options);
@@ -222,7 +222,7 @@ const table = {
   /**
    * {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   taskFindOne: async (options) => {
     return await dataSource.getRepository('task').findOne(options);
@@ -230,7 +230,7 @@ const table = {
   /**
    * null or {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   taskFind: async (options) => {
     if (options === null) {
@@ -242,7 +242,7 @@ const table = {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   taskFindWhere: async (options) => {
     return await dataSource.getRepository('task').findBy(options);
@@ -250,7 +250,7 @@ const table = {
   /**
    * {name: 'mari'} to {name: Like('%mari%')}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   taskFindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -264,7 +264,7 @@ const table = {
   // **************************************************************************
   /**
    * video repo
-   * @returns {Promise<*>}
+   * @returns {Promise<Repository>}
    */
   videoRepo: async () => {
     return await dataSource.getRepository('video');
@@ -272,13 +272,13 @@ const table = {
   /**
    * save video
    * @param entityObj
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
-  videoSave: async (entityObj) => {
-    return await dataSource.getRepository('video').save(entityObj);
+  videoInsert: async (entityObj) => {
+    await dataSource.getRepository('video').insert(entityObj);
   },
   /**
-   * delete video
+   * {id: 1}
    * @param options
    * @returns {Promise<*>}
    */
@@ -286,10 +286,10 @@ const table = {
     return await dataSource.getRepository('video').delete(options);
   },
   /**
-   * update video
+   * {id: 1}
    * @param entityNew
    * @param options
-   * @returns {Promise<void>}
+   * @returns {Promise<Object>}
    */
   videoUpdate: async (entityNew, options) => {
     const findObj = await dataSource.getRepository('video').findOneBy(options);
@@ -299,7 +299,7 @@ const table = {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   videoFindOneWhere: async (options) => {
     return await dataSource.getRepository('video').findOneBy(options);
@@ -307,7 +307,7 @@ const table = {
   /**
    * {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>} findObj
+   * @returns {Promise<Object>}
    */
   videoFindOne: async (options) => {
     return await dataSource.getRepository('video').findOne(options);
@@ -315,7 +315,7 @@ const table = {
   /**
    * null or {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   videoFind: async (options) => {
     if (options === null) {
@@ -327,7 +327,7 @@ const table = {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   videoFindWhere: async (options) => {
     return await dataSource.getRepository('video').findBy(options);
@@ -335,7 +335,7 @@ const table = {
   /**
    * {name: 'mari'} to {name: Like('%mari%')}
    * @param options
-   * @returns {Promise<*>}
+   * @returns {Promise<Array>}
    */
   videoFindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];

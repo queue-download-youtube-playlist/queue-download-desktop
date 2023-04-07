@@ -1,12 +1,9 @@
 module.exports = {
   name: 'video',
   columns: {
-    id: {
-      primary: true,
-      type: 'int',
-      generated: true,
-    },
     vid: {
+      primary: true,
+      generated: false,
       type: 'varchar', default: ''
     },
     vlink: {

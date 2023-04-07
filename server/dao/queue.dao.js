@@ -12,32 +12,36 @@ async function queuePost(message, passdata) {
   let {queue} = message;
   let {playlist, title} = queue;
   queue['title'] = titleFilter(title);
-  // console.log('queue');
-  // console.log(queue);
+  // console.log('playlist');
+  // console.log(playlist);
 
   let where = {};
   let columnName = 'playlist';
   where[columnName] = playlist;
   let findOne = await table.queueFindOneWhere({playlist});
   if (findOne === null) {
-    await table.queueSave(queue);
-    // comnotice.nb_notice({
-    //   text: `create new queue ${title}`,
-    // }, passdata);
-    daoNotice.n_desk_QueueAdd(message, passdata);
-    daoNotice.noticebrowserPlaylist(message, passdata);
+    await table.queueInsert(queue);
+
+    daoNotice.notice_browser_firefox_notice({
+      title: 'new playlist data',
+      text: `${title}`,
+    }, passdata);
+
+    daoNotice.notice_deskapp_queue_add({queue}, passdata);
+
+    // todo notice firefox go get playlist all video id
+    daoNotice.notice_browser_playlist({playlist}, passdata);
   } else {
-    // comnotice.nb_notice({
-    //   text: `exists ${title}`,
-    // }, passdata);
+    daoNotice.notice_browser_firefox_notice({
+      title: 'exists playlist',
+      text: `${title}`,
+    }, passdata);
   }
 
 }
 
 async function queueDelete(message) {
-  // console.log('queueDelete\n', message);
-  let {queue} = message;
-  let {playlist} = queue;
+  let {playlist} = message;
   let findKey = {playlist};
   let findOne = await table.queueFindOneWhere(findKey);
   if (findOne === null) {
@@ -49,20 +53,40 @@ async function queueDelete(message) {
 }
 
 /**
- * update the progress
+ *
+ * @param message {Object:{playlist:String}}
+ * @returns {Promise<number>}
  */
 async function queueUpdateProgress(message) {
-  let {queue} = message;
-  let {playlist} = queue;
+  let {playlist} = message;
 
-  let searchObj = {'playlist': playlist, 'finished': true};
-  let tasks = await table.taskFindWhere(searchObj);
-  let progress = tasks.length;
-  if (progress >= 0) {
-    let queue = {progress};
-    await table.queueUpdate(queue, {playlist});
+  try {
+    let searchObj = {'playlist': playlist, 'finished': true};
+    let findManyTask = await table.taskFindWhere(searchObj);
+    let progress = findManyTask.length;
+    await table.queueUpdate({progress}, {playlist});
+
+    return progress;
+  } catch (e) {
+    console.log(`e=`);
+    console.log(e);
+    let progress = 0;
+    return progress;
   }
-  return progress;
+}
+
+async function queueUpdateTotal(message, passdata) {
+  let {
+    playlist,
+    vsum,
+  } = message;
+  let total = vsum;
+
+  await table.queueUpdate({playlist, total}, {playlist});
+  daoNotice.notice_deskapp_queue_update({
+    queue: {playlist, total},
+  }, passdata);
+
 }
 
 async function queueGetAll() {
@@ -78,39 +102,29 @@ async function queueGetAll() {
 }
 
 /**
- * desktop app ask to download a playlist,
- *  just download one.
- * @param message {Object:{queue:{playlist:String}}}
+ * download all video,
+ *
+ * find the playlist, get the top one video id, download it.
+ *
+ * @param message {Object:{playlist:String}}}
  * @param passdata
  */
 async function queueDownloadOne(message, passdata) {
-
-  if (message.hasOwnProperty('queue')) {
-    let {queue} = message;
-    let {playlist} = queue;
-
-    let options = {
-      where: {'playlist': playlist, 'finished': false},
-    };
-
-    let findOne = await table.taskFindOne(options);
-    if (findOne) {
-      let {vid, index, finished} = findOne;
-      let message = {
-        vid,
-        queue: {
-          index, playlist,
-        },
-      };
-      await daoNotice.noticebrowserMP4(message, passdata);
-    } else {
-      // console.log(`queueDownloadOne playlist progress 100% !!!`);
-      // console.log(options);
-    }
+  let {playlist} = message;
+  let findOne = await table.taskFindOneWhere({
+    playlist, 'finished': false,
+  });
+  if (findOne) {
+    let {vid} = findOne;
+    daoNotice.notice_browser_mp4({vid, playlist}, passdata);
 
   } else {
-    // console.log('queue.dao.js queueDownloadOne no ' +
-    //     '\nmessage=', message);
+    // console.log(`queueDownloadOne playlist progress 100% !!!`);
+    // console.log(options);
+    daoNotice.notice_browser_firefox_notice({
+      title: 'dont need download!',
+      text: 'playlist progress is 100%',
+    }, passdata);
   }
 
 }
@@ -119,6 +133,7 @@ const daoQueue = {
   queuePost: queuePost,
   queueDelete: queueDelete,
   queueUpdateProgress: queueUpdateProgress,
+  queueUpdateTotal: queueUpdateTotal,
 
   queueGetAll: queueGetAll,
   queueDownloadOne: queueDownloadOne,

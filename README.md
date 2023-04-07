@@ -13,13 +13,13 @@
 
 ### step1:
 
-[download](./releases) windows portable app
+[download windows portable app](https://github.com/queue-download-youtube-playlist/queue-download-desktop/releases)
 
 youtube_playlist_download_queue-win32-x64-x.x.xx.zip
 
 ### step2:
 
-install [firefox extension](https://addons.mozilla.org/zh-CN/firefox/addon/ytb-playlist-download-queue/)
+[install firefox extension](https://addons.mozilla.org/zh-CN/firefox/addon/ytb-playlist-download-queue/)
 
 
 
@@ -40,7 +40,7 @@ install [firefox extension](https://addons.mozilla.org/zh-CN/firefox/addon/ytb-p
 
 click "download video"
 
-### download playlist [unstable]
+### download playlist
 
 ![add_to_queue.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b02dca4b31ce6fb70f1f6009479fd1bedcae2185/image/add_to_queue.png)
 

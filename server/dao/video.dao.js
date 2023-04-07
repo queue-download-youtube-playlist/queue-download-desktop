@@ -19,20 +19,20 @@ async function videoPost(message, passdata) {
 
   let findObj = await table.videoFindOneWhere({vid});
   if (findObj) { // find one update it
-    // comnotice.nb_notice({
-    //   text: `video id exists ${title}`,
+    // daoNotice.notice_browser_firefox_notice({
+    //   title: `update exists video data`,
+    //   text: null,
     // }, passdata);
-    await table.videoUpdate(video, {vid});
+
   } else {
     // no found, create it
-    await table.videoSave(video);
-    daoNotice.nb_notice({
+    await table.videoInsert(video);
+    daoNotice.notice_browser_firefox_notice({
       title: `new video data`,
       text: `${title}`,
     }, passdata);
-    console.log(`video.dao.js videoPost create`);
 
-    daoNotice.n_desk_fetchAuthorVideo({author}, passdata);
+    daoNotice.notice_deskapp_fetch_author_video({author}, passdata);
   }
 
 }
@@ -40,8 +40,9 @@ async function videoPost(message, passdata) {
 async function _videodelete(vid) {
   try {
     await table.videoDelete({vid});
+    return true;
   } catch (e) {
-
+    return false;
   }
 }
 
@@ -52,25 +53,27 @@ async function _videodelete(vid) {
  */
 async function videoDelete(message, passdata) {
   let {vid, withfile} = message;
-  if (withfile) {
-    let result = await daoFile.deleteDownloadedMP4JPG({vid});
-    if (result) {
+  try {
+    if (withfile) {
+      await daoFile.deleteDownloadedMP4JPG({vid});
+      await _videodelete(vid);
+    } else {
+      await _videodelete(vid);
     }
-    await _videodelete(vid);
-    // comnotice.nb_notice({
-    //   text: `delete ok`,
-    // }, passdata);
-  } else {
-    await _videodelete(vid);
-    // comnotice.nb_notice({
-    //   text: `delete ok`,
-    // }, passdata);
+  } catch (e) {
+
+  } finally {
+    daoNotice.notice_browser_firefox_notice({
+      title: 'delete success',
+      text: '',
+    }, passdata);
+
   }
 }
 
 async function videoPut(message, passdata) {
 
-  let {video, queue} = message;
+  let {video, playlist} = message;
   let {vid, downlink} = video;
 
   let findOne = await table.videoFindOneWhere({vid});
@@ -79,7 +82,7 @@ async function videoPut(message, passdata) {
 
     if (downlink) {
       let messageDownloadMP4 = {
-        queue,
+        playlist,
         'video': findOneVideo,
       };
       await daoDownload.gotodownloadMP4(messageDownloadMP4, passdata);

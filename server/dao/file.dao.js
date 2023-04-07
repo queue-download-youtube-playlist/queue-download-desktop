@@ -5,21 +5,12 @@ const {table} = require('../db/util.typeorm.js');
 
 const endsJPG = `.jpg`;
 const endsMP4 = `.mp4`;
-const endsaria2 = `.aria2`;
+
+// const endsaria2 = `.aria2`;
 
 async function getConfig() {
   const optionsId1 = {id: 1};
   return await table.configFindOneWhere(optionsId1);
-}
-
-async function getConfigSavelocation() {
-  let config = await getConfig();
-  return config.savelocation;
-}
-
-async function getConfigTmplocation() {
-  let config = await getConfig();
-  return config.tmplocation;
 }
 
 /**
@@ -27,8 +18,7 @@ async function getConfigTmplocation() {
  * @param video {Object:{vid:String}}
  */
 async function common(video) {
-  const savelocation = await getConfigSavelocation();
-  const tmplocation = await getConfigTmplocation();
+  const {savelocation, tmplocation} = await getConfig();
 
   let {vid} = video;
   let findOneVideo = await table.videoFindOneWhere({vid});
@@ -78,53 +68,32 @@ async function deleteDownloadedMP4JPG(video) {
 }
 
 async function moveMP4(video) {
-  setTimeout(async () => {
-    let map = await common(video);
-    let filename = map.newfileNameMP4;
-    try {
-      fs.renameSync(map.oldPathMP4, map.newPathMP4);
-      console.log(`moved ok  \n${filename}`);
-    } catch (e) {
-      console.log(`moved failed !!! \n${filename}`);
-      console.log(e);
-    }
-  }, 1000);
+  let map = await common(video);
+  // console.log(`map=`);
+  // console.log(map);
+
+  let filename = map.newfileNameMP4;
+  await new Promise(resolve => setTimeout(resolve, 3000))
+  try {
+    fs.renameSync(map.oldPathMP4, map.newPathMP4);
+    console.log(`moved ok  \n${filename}`);
+  } catch (e) {
+    console.log(`moved failed !!! \n${filename}`);
+    console.log(e);
+  }
 }
 
 async function moveJPG(video) {
-  setTimeout(async () => {
-    let map = await common(video);
-    let filename = map.newfilenameJPG;
-    try {
-      fs.renameSync(map.oldPathJPG, map.newPathJPG);
-      console.log(`moved ok  \n${filename}`);
+  let map = await common(video);
 
-    } catch (e) {
-      console.log(`moved failed !!! \n${filename}`);
-      console.log(e);
-    }
-  }, 1000);
-}
-
-function getPatharia2c() {
-  return path.join(__dirname, );
-}
-
-async function checkUnnecessaryMP4() {
-  let tmplocation = await getConfigTmplocation();
-  let files = fs.readdirSync(tmplocation);
-  let filter = files.filter(value => value.endsWith(endsMP4)).
-      filter(value => value.endsWith(endsaria2));
-
+  let filename = map.newfilenameJPG;
+  await new Promise(resolve => setTimeout(resolve, 3000));
   try {
-    filter.forEach(value => {
-      console.log('value=', value);
+    fs.renameSync(map.oldPathJPG, map.newPathJPG);
+    console.log(`moved ok  \n${filename}`);
 
-      let pathUnlink = path.join(tmplocation, value);
-      fs.unlinkSync(pathUnlink);
-
-    });
   } catch (e) {
+    console.log(`moved failed !!! \n${filename}`);
     console.log(e);
   }
 }
@@ -170,15 +139,13 @@ async function checkOldMP4FileSize(video) {
 }
 
 const daoFile = {
-  getConfigSavelocation: getConfigSavelocation,
-  getConfigTmplocation: getConfigTmplocation,
+  getConfig: getConfig,
 
   deleteDownloadedMP4JPG: deleteDownloadedMP4JPG,
   moveMP4: moveMP4,
   moveJPG: moveJPG,
 
   checkNewPathMP4: checkNewPathMP4,
-  checkUnnecessaryMP4: checkUnnecessaryMP4,
 
   checkOldMP4FileSize: checkOldMP4FileSize,
 };

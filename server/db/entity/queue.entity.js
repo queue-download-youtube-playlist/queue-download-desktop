@@ -1,15 +1,12 @@
 module.exports = {
   name: 'queue',
   columns: {
-    id: {
-      primary: true,
-      type: 'int',
-      generated: true,
-    },
-    vid: {
-      type: 'varchar', default: ''
+    total: {
+      type: 'int', default: 0,
     },
     playlist: {
+      primary: true,
+      generated: false,
       type: 'varchar', default: ''
     },
     title: {
@@ -25,9 +22,6 @@ module.exports = {
       type: 'int', default: 0,
     },
     progress: {
-      type: 'int', default: 0,
-    },
-    total: {
       type: 'int', default: 0,
     },
   },

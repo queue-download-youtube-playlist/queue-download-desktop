@@ -9,6 +9,6 @@ geneUtilExpressJs();
 // npmCacheClean();
 // yarnInstallOnWindows()
 // execSync(`npm run rebuild`)
- npmRunStart()
+//  npmRunStart()
 
 // execSync(`start "" node server/app.js`)

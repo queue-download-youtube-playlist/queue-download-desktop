@@ -10,6 +10,8 @@ const {v4: uuidv4} = require('uuid');
 
 const {dbInitValue} = require('./db/datasource.js');
 const {setupRouterList} = require('./util.express');
+const path = require('path');
+const {dataSource} = require('./db/datasource');
 
 //------------------------------------------------------------
 
@@ -42,7 +44,7 @@ webSocketServer.on('connection', (connect) => {
     switch (message['action']) {
       case 'heart_firefox':
         const {daoNotice} = require('./dao/notice.dao.js');
-        daoNotice.n_desk_HeartBeat(message, passdata);
+        daoNotice.notice_deskapp_heartbeat(message, passdata);
         break;
       case 'login_desktop':
         console.log('desktop connected .....');
@@ -52,21 +54,27 @@ webSocketServer.on('connection', (connect) => {
 });
 
 async function initialDir(connection) {
+  let options = {id: 1};
   let findOneBy = await connection.getRepository('config')
-    .findOneBy({id: 1});
+    .findOneBy(options);
   const homedir = require('os').homedir();
   const path = require('path');
   let tmplocation = path.join(homedir,
     'AppData', 'Local', 'Temp', 'youtube_playlist_download_queue');
+  let savelocation = path.join(homedir, 'Desktop', 'QueueDownload');
+  let configObj = {savelocation, tmplocation};
 
   if (findOneBy === null) {
-    let savelocation = path.join(homedir, 'Desktop', 'QueueDownload');
-    let configObj = {savelocation, tmplocation};
     connection.getRepository('config').save(configObj);
+
     if (fs.existsSync(savelocation) === false) {
       fs.mkdirSync(savelocation, {recursive: true});
     }
   } else {
+    const findObj = await dataSource.getRepository('config').findOneBy(options);
+    await dataSource.getRepository('config').merge(findObj, configObj);
+    await dataSource.getRepository('config').save(findObj);
+
     fs.rmSync(tmplocation, {recursive: true, force: true});
   }
   if (fs.existsSync(tmplocation) === false) {

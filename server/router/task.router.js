@@ -1,3 +1,4 @@
+const {daoQueue} = require('../dao/queue.dao');
 const wrapper = function(passdata) {
   const express = require('express');
   const taskRouter = express.Router();
@@ -9,6 +10,7 @@ const wrapper = function(passdata) {
   taskRouter.post('/', async (req, res) => {
     res.status(200).send();
     await daoTask.taskPost(req.body, passdata);
+    await daoQueue.queueUpdateTotal(req.body, passdata)
   });
 
   taskRouter.get('/all', async (req, res) => {
