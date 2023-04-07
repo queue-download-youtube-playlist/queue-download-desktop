@@ -36,20 +36,20 @@ youtube_playlist_download_queue-win32-x64-x.x.xx.zip
 ### download one video
 
 
-![download_one_video](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b02dca4b31ce6fb70f1f6009479fd1bedcae2185/image/download_one_video.png)
+![download_one_video](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/4c892aeb523430f54a62a9016f426da5370e180d/image/download_one_video.png)
 
 click "download video"
 
 ### download playlist
 
-![add_an_playlist.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b02dca4b31ce6fb70f1f6009479fd1bedcae2185/image/add_an_playlist.png)
+![add_an_playlist.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/4c892aeb523430f54a62a9016f426da5370e180d/image/add_an_playlist.png)
 
 
 click it, waiting...
 
 check the windows portable app "Playlist" area,
 
-![download_playlist_all_video.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/b02dca4b31ce6fb70f1f6009479fd1bedcae2185/image/download_playlist_all_video.png)
+![download_playlist_all_video.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/4c892aeb523430f54a62a9016f426da5370e180d/image/download_playlist_all_video.png)
 
 ---
 
