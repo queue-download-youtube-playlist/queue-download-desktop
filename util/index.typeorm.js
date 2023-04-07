@@ -40,20 +40,7 @@ function findPathTarget() {
   return pathTarget;
 }
 
-/**
- *
- * @param sampleString{String}
- */
-function upcaseFirstLetter(sampleString) {
-  let split = sampleString.split('');
-  let first = split[0].toUpperCase()
-  split[0] = first
 
-  let reduce = split.reduce((result, value)=>{
-    return result.concat(value)
-  },'');
-  return reduce
-}
 
 /**
  * gene util.typeorm.js file
@@ -68,8 +55,6 @@ function geneUtilTypeormJs(pathTarget = null) {
     const reg = /.+(?=\.entity\.js)/;
     const mat = filename.match(reg);
     const entityName = mat[0]; // eg: config --> config.entity.js
-
-    // const upcaseEntityName = upcaseFirstLetter(entityName)
 
     const line =
         `

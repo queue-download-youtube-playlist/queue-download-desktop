@@ -6,32 +6,34 @@ const {
   GITHUB_AUTHTOKEN,
 } = readEnvFile('auth.env');
 
+let publish_bitbucket = {
+  name: '@electron-forge/publisher-bitbucket',
+  config: {
+    replaceExistingFiles: true,
+    repository: {
+      owner: 'vacantthinker',
+      name: 'playlist-download-desktop',
+    },
+    auth: {
+      username: BITBUCKET_USERNAME, // string
+      appPassword: BITBUCKET_APP_PASSWORD, // string
+    },
+  },
+};
+let publish_github = {
+  name: '@electron-forge/publisher-github',
+  config: {
+    repository: {
+      owner: 'playlist-download-youtube-playlist',
+      name: 'playlist-download-desktop',
+    },
+    prerelease: true,
+    authToken: GITHUB_AUTHTOKEN,
+  },
+};
 let publishers = [
-  {
-    name: '@electron-forge/publisher-bitbucket',
-    config: {
-      replaceExistingFiles: true,
-      repository: {
-        owner: 'vacantthinker',
-        name: 'playlist-download-desktop',
-      },
-      auth: {
-        username: BITBUCKET_USERNAME, // string
-        appPassword: BITBUCKET_APP_PASSWORD, // string
-      },
-    },
-  },
-  {
-    name: '@electron-forge/publisher-github',
-    config: {
-      repository: {
-        owner: 'playlist-download-youtube-playlist',
-        name: 'playlist-download-desktop',
-      },
-      prerelease: true,
-      authToken: GITHUB_AUTHTOKEN,
-    },
-  },
+  // publish_bitbucket,
+  publish_github,
 ];
 let plugins = [
   {
