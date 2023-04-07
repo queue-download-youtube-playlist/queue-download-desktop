@@ -27,12 +27,12 @@ let publish_github = {
       owner: 'playlist-download-youtube-playlist',
       name: 'playlist-download-desktop',
     },
-    prerelease: true,
+    prerelease: false,
     authToken: GITHUB_AUTHTOKEN,
   },
 };
 let publishers = [
-  // publish_bitbucket,
+//  publish_bitbucket,
   publish_github,
 ];
 let plugins = [
