@@ -7,7 +7,7 @@
 # how to download (install)?
 
 ### step1: [download windows portable app](https://github.com/queue-download-youtube-playlist/queue-download-desktop/releases)
-### step2: [install firefox extension](https://addons.mozilla.org/zh-CN/firefox/addon/ytb-playlist-download-queue/)
+### step2: [install firefox extension](https://addons.mozilla.org/en-us/firefox/addon/ytb-playlist-download-queue/)
 
 # how to use?
  - step1: keep windows portable app running.
