@@ -3,7 +3,7 @@ const {daoFile} = require('./file.dao.js');
 const {daoNotice} = require('./notice.dao');
 
 async function openVideo(message, passdata) {
-  console.log('openVideo')
+  console.log('openVideofn ');
   console.log('meslog ', `message=\n`, message);
 
   let {vid} = message;
@@ -23,7 +23,7 @@ async function openVideo(message, passdata) {
         text: 'file is used by another process',
       }, passdata);
     }
-  }else {
+  } else {
     daoNotice.notice_browser_firefox_notice({
       title: 'not exists! click redownload button',
       text: pathmp4,
@@ -32,8 +32,19 @@ async function openVideo(message, passdata) {
 
 }
 
+async function openExtensionPage() {
+  let url = `"https://addons.mozilla.org/en-US/firefox/addon/ytb-playlist-download-queue/"`;
+  try {
+    execSync(`start "" ${url}`);
+  } catch (e) {
+    console.log(e);
+  }
+
+}
+
 const daoOpen = {
   openVideo: openVideo,
+  openExtensionPage: openExtensionPage,
 };
 
 module.exports = {

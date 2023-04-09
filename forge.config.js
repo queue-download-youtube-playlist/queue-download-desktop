@@ -12,7 +12,7 @@ let publish_bitbucket = {
     replaceExistingFiles: true,
     repository: {
       owner: 'vacantthinker',
-      name: 'playlist-download-desktop',
+      name: 'queue-download-desktop',
     },
     auth: {
       username: BITBUCKET_USERNAME, // string
@@ -20,20 +20,22 @@ let publish_bitbucket = {
     },
   },
 };
+
+// https://github.com/queue-download-youtube-playlist/queue-download-desktop/
 let publish_github = {
   name: '@electron-forge/publisher-github',
   config: {
     repository: {
-      owner: 'playlist-download-youtube-playlist',
-      name: 'playlist-download-desktop',
+      owner: 'queue-download-youtube-playlist',
+      name: 'queue-download-desktop',
     },
-    prerelease: false,
+    prerelease: true,
     authToken: GITHUB_AUTHTOKEN,
   },
 };
 let publishers = [
-//  publish_bitbucket,
-  publish_github,
+  publish_bitbucket,
+  // publish_github,
 ];
 let plugins = [
   {
@@ -59,7 +61,7 @@ let plugins = [
 
 module.exports = {
   packagerConfig: {
-    icon: iconPath
+    icon: iconPath,
   },
   rebuildConfig: {},
   makers: [
