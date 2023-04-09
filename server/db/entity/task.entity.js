@@ -1,9 +1,12 @@
 module.exports = {
   name: 'task',
   columns: {
-    vid: {
+    tid: {
       primary: true,
       generated: false,
+      type: 'varchar', default: '',
+    },
+    vid: {
       type: 'varchar', default: '',
     },
     index: {

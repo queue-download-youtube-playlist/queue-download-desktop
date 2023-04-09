@@ -4,6 +4,7 @@ const {daoQueue} = require('./queue.dao');
 const {daoFile} = require('./file.dao.js');
 const path = require('path');
 const {table} = require('../db/util.typeorm');
+const fs = require('fs');
 
 /**
  * cannot find the value!!!
@@ -49,7 +50,7 @@ function getAria2EXE() {
  */
 async function downloadMP4UseCMD(message, passdata) {
   let {video} = message;
-  let {vid, downlink, filename} = video;
+  let {vid, downlink, author} = video;
   let endsMP4 = `.mp4`;
   let fileNameMP4 = `${vid}${endsMP4}`;
 
@@ -58,9 +59,9 @@ async function downloadMP4UseCMD(message, passdata) {
   let aria2c = getAria2EXE();
 
   const arr = [
-    `start`,
-    `"downloading... ${filename}"`,
-    `/MIN`,
+    // `start`,
+    // `"downloading... ${filename}"`,
+    // `/MIN`,
 
     `"${aria2c}"`,
     `--file-allocation=none`,
@@ -71,24 +72,27 @@ async function downloadMP4UseCMD(message, passdata) {
     `--dir=${tmplocation}`,
     downlink,
 
-    `&& exit`,
+    // `&& exit`,
   ];
-  let cmd = arr.reduce((str, val) => str.concat(' ').concat(val));
+  let command = arr.reduce((str, val) => str.concat(' ', val));
 
-  // console.log('cmd=', cmd);
-//  fs.writeFileSync('log', cmd);
-
+  console.log('command=', command);
   passdata.downloading = true;
-  exec(cmd, async (error, stdout, stderr) => {
-    passdata.downloading = false;
+  const coffeeProcess = exec(command);
+  // todo download before show the video, scroll find it
+  daoNotice.notice_deskapp_show_the_video({author, vid}, passdata);
 
-    if (error) {
-      console.log(`error=`);
-      console.log(error);
-    } else {
-      await downloadMP4OK(message, passdata, true);
-    }
+  coffeeProcess.stdout.on('data', async (data) => {
+    daoNotice.notice_deskapp_downloadinfo({data, vid}, passdata).then();
   });
+  coffeeProcess.stderr.on('data', (data) => {
+    console.log(data);
+  });
+  coffeeProcess.on('close', async () => {
+    passdata.downloading = false;
+    await downloadMP4OK(message, passdata, true);
+  });
+
 }
 
 /**
@@ -173,16 +177,15 @@ async function gotodownloadMP4(message, passdata) {
     await downloadMP4OK(message, passdata, false);
   } else {
     if (passdata.downloading) {
-      // comnotice.notice_browser_firefox_notice({
-      //   text: `downloading something , please wait`,
-      // }, passdata);
+      daoNotice.notice_browser_firefox_notice({
+        title: 'downloading something please wait finished',
+        text: ``,
+      }, passdata);
     } else {
       daoNotice.notice_browser_firefox_notice({
         title: 'downloading',
         text: `${title}`,
       }, passdata);
-
-      // console.log('downloading .................................. ');
       await downloadMP4UseCMD(message, passdata);
     }
   }

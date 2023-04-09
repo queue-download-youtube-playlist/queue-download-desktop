@@ -34,8 +34,8 @@ const wrapper = function(passdata) {
    */
   videoRouter.get('/check/:vid', async (req, res) => {
     let {vid} = req.params;
-    let findOne = await daoVideo.videoCheck(vid);
-    res.status(200).send(findOne);
+    let exists = await daoVideo.videoCheck(vid, passdata);
+    res.status(200).send(exists);
   });
 
   /**

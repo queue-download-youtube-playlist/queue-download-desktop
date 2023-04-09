@@ -26,7 +26,7 @@
 ![add_an_playlist.png](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/4c892aeb523430f54a62a9016f426da5370e180d/image/add_an_playlist.png)
 
 
-wait a few seconds ..., it will open new playlist tab, collect all video id.
+it will open new tab with playlist link, then collect all video id by scrolling.
 
 check the windows portable app "Playlist" area,
 

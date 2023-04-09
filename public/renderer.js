@@ -1,5 +1,5 @@
-import './assets/home-view-84f56ce0.js';
-import './assets/index-0288bccd.js';
-import './assets/index-5e7d8b50.css';
-import './assets/playlist-view-63d9fe2c.js';
-import './assets/search-view-e13ee148.js';
+import './assets/home-view-3ec7a687.js';
+import './assets/index-8b50b40d.js';
+import './assets/index-e2f0fe44.css';
+import './assets/queue-view-0f698e1a.js';
+import './assets/search-view-4a873b40.js';

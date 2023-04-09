@@ -21,21 +21,18 @@ async function queuePost(message, passdata) {
   let findOne = await table.queueFindOneWhere({playlist});
   if (findOne === null) {
     await table.queueInsert(queue);
-
-    daoNotice.notice_browser_firefox_notice({
-      title: 'new playlist data',
-      text: `${title}`,
-    }, passdata);
-
+    // daoNotice.notice_browser_firefox_notice({
+    //   title: 'new playlist data',
+    //   text: `${title}`,
+    // }, passdata);
     daoNotice.notice_deskapp_queue_add({queue}, passdata);
-
     // todo notice firefox go get playlist all video id
     daoNotice.notice_browser_playlist({playlist}, passdata);
   } else {
-    daoNotice.notice_browser_firefox_notice({
-      title: 'exists playlist',
-      text: `${title}`,
-    }, passdata);
+    // daoNotice.notice_browser_firefox_notice({
+    //   title: 'exists playlist',
+    //   text: `${title}`,
+    // }, passdata);
   }
 
 }
@@ -78,9 +75,8 @@ async function queueUpdateProgress(message) {
 async function queueUpdateTotal(message, passdata) {
   let {
     playlist,
-    vsum,
+    total,
   } = message;
-  let total = vsum;
 
   await table.queueUpdate({playlist, total}, {playlist});
   daoNotice.notice_deskapp_queue_update({
@@ -129,6 +125,24 @@ async function queueDownloadOne(message, passdata) {
 
 }
 
+/**
+ *
+ * @param message{Object:{playlist:String}}
+ * @returns {Promise<boolean>}
+ */
+async function queueCheck(message) {
+  console.log('queue check');
+  console.log(`message=`);
+  console.log(message);
+
+  let {playlist} = message;
+  let findOneWhere = await table.queueFindOneWhere({playlist});
+  let exists = findOneWhere ? true : false;
+  console.log(`exists=`);
+  console.log(exists);
+  return exists;
+}
+
 const daoQueue = {
   queuePost: queuePost,
   queueDelete: queueDelete,
@@ -136,6 +150,7 @@ const daoQueue = {
   queueUpdateTotal: queueUpdateTotal,
 
   queueGetAll: queueGetAll,
+  queueCheck: queueCheck,
   queueDownloadOne: queueDownloadOne,
 };
 

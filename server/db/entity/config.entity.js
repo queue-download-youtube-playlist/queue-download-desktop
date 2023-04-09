@@ -12,5 +12,8 @@ module.exports = {
     tmplocation: {
       type: 'varchar', default: '',
     },
+    appdatacache: {
+      type: 'varchar', default: '',
+    }
   },
 };

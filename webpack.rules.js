@@ -1,3 +1,8 @@
+let cssRule = {
+  test: /\.css$/,
+  use: [{loader: 'style-loader'}, {loader: 'css-loader'}],
+};
+
 module.exports = [
   // Add support for native node modules
   {

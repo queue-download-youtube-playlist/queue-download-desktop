@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -10,7 +11,6 @@ const {v4: uuidv4} = require('uuid');
 
 const {dbInitValue} = require('./db/datasource.js');
 const {setupRouterList} = require('./util.express');
-const path = require('path');
 const {dataSource} = require('./db/datasource');
 
 //------------------------------------------------------------
@@ -19,6 +19,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 const socketMap = {};
 const hostname = 'localhost';
@@ -62,8 +63,9 @@ async function initialDir(connection) {
   let tmplocation = path.join(homedir,
     'AppData', 'Local', 'Temp', 'youtube_playlist_download_queue');
   let savelocation = path.join(homedir, 'Desktop', 'QueueDownload');
-  let configObj = {savelocation, tmplocation};
-
+  let appdatacache = path.join(homedir,
+    'AppData', 'Roaming', 'youtube_playlist_download_queue', 'downloadvideo');
+  let configObj = {savelocation, tmplocation, appdatacache};
   if (findOneBy === null) {
     connection.getRepository('config').save(configObj);
 
@@ -76,6 +78,10 @@ async function initialDir(connection) {
     await dataSource.getRepository('config').save(findObj);
 
     fs.rmSync(tmplocation, {recursive: true, force: true});
+  }
+
+  if (fs.existsSync(appdatacache) === false) {
+    fs.mkdirSync(appdatacache, {recursive: true});
   }
   if (fs.existsSync(tmplocation) === false) {
     fs.mkdirSync(tmplocation, {recursive: true});

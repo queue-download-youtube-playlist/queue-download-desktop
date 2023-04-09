@@ -1,5 +1,6 @@
+const {table} = require('../db/util.typeorm');
+
 function _notice_All_Client(message, passdata) {
-//  console.log('_notice_All_Client() message=\n', message);
   const clients = passdata.socketMap;
   Object.values(clients).forEach(conn => {
     conn?.send(JSON.stringify(message));
@@ -13,7 +14,8 @@ function _notice_All_Client(message, passdata) {
  */
 function notice_browser_mp4(message, passdata) {
   let {vid, playlist} = message;
-  // console.log(`notice.dao.js notice_browser_mp4   vid ${vid}`, '\n', 'playlist=', playlist);
+  console.log(`notice.dao.js notice_browser_mp4
+     vid ${vid}`, '\n', 'playlist=', playlist);
 
   if (vid) {
     let action = 'notice_browser_gogetmp4';
@@ -35,22 +37,12 @@ function notice_browser_mp4(message, passdata) {
  */
 function notice_browser_firefox_notice(message, passdata) {
   let {title, text} = message;
-  let titleDefault = 'youtube playlist download playlist';
-  if (title) {
-  } else {
-    title = titleDefault;
-  }
-  if (text) {
-  } else {
-    text = '';
-  }
+  let titleDefault = 'youtube playlist download queue', textDefault = '';
+  title = title ? title : titleDefault;
+  text = text ? text : textDefault;
 
-  _notice_All_Client(
-    {
-      action: `notice_firefox_notice`,
-
-      title: String(title),
-      text: String(text),
+  _notice_All_Client({
+      action: `notice_firefox_notice`, title: String(title), text: String(text),
     }, passdata,
   );
 }
@@ -62,14 +54,10 @@ function notice_browser_firefox_notice(message, passdata) {
  */
 function notice_browser_image(message, passdata) {
   let {vid} = message;
-
-  // console.log(`notice router jpg vid ${vid}`);
   if (vid) {
     let message = {
-      'action': 'notice_browser_gogetjpg',
-      vid,
-      'url': `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`,
-      // type: `image`,
+      action: 'notice_browser_gogetjpg', vid,
+      url: `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`,
     };
     _notice_All_Client(message, passdata);
   }
@@ -86,15 +74,105 @@ function notice_browser_playlist(message, passdata) {
   let prefixPlaylist = 'https://www.youtube.com/playlist?list=';
   let url = prefixPlaylist.concat(playlist);
   _notice_All_Client({
-    'action': 'notice_browser_gogetplaylist',
-    playlist,
-    url,
-    // type: `playlist`,
-    active: true,
+    action: 'notice_browser_gogetplaylist', playlist, url,
+    useExistsPlaylist: true,
   }, passdata);
 }
 
 //*****************************************************************************
+/**
+ *
+ * @param data{String}
+ * @return {Object}
+ */
+function handleDataToJson(data) {
+  let regDownInfo = /(?<=\[#\w{6} )(.+)(?=\])/;
+  let regComplete = /Download complete/;
+  if (regDownInfo.test(data)) {
+    let mat = data.match(regDownInfo);
+
+    let first = mat[0];
+    let split = String(first).split(/\s/);
+    if (split.length >= 3) {
+      let itemSizeProgress = split[0];
+      let filesize = 0;
+      let progress = 0;
+      // 237MiB/241MiB(98%)
+      let regFileSize = /(?<=\/)(.+)(?=\()/;
+      if (regFileSize.test(itemSizeProgress)) {
+        let matFileSize = itemSizeProgress.match(regFileSize);
+        filesize = matFileSize[0];
+        let regProgress = /(?<=\()(.+)(?=\))/;
+        let matProgress = itemSizeProgress.match(regProgress);
+        progress = matProgress[0];
+      }
+
+      //
+      let itemConnection = split[1];
+      let regConnNum = /(?<=\:)(.+)/;
+      let matConnNum = itemConnection.match(regConnNum);
+      let cn = matConnNum[0];
+
+      let itemDownloadSpeed = split[2];
+      let regDownloadSpeed = /(?<=\:)(.+)/;
+      let matDownloadSpeed = itemDownloadSpeed.match(regDownloadSpeed);
+      let speed = matDownloadSpeed[0];
+
+      let itemEstimatedTime = 'null';
+      let eta = 'null';
+      if (split.length === 4) {
+        itemEstimatedTime = split[3];
+        let regEta = /(?<=\:)(.+)/;
+        let matEta = itemEstimatedTime.match(regEta);
+        eta = matEta[0];
+
+      }
+      let obj = {
+        filesize,
+        progress,
+        cn,
+        speed,
+        eta,
+        data,
+        dowhat: 'updateDownInfo',
+      };
+      return obj;
+    }
+
+  } else if (regComplete.test(data)) {
+    console.log(data);
+    let obj = {
+      data,
+      dowhat: 'completeDownInfo',
+    };
+    return obj;
+  }
+}
+
+/**
+ *
+ * @param message{Object:{data:String, vid:String}}
+ * @param passdata
+ * @return {Promise<void>}
+ */
+async function notice_deskapp_downloadinfo(message, passdata) {
+  let {data, vid} = message;
+  if (data) {
+    let findOne = await table.videoFindOneWhere({vid});
+
+    let objReadable = handleDataToJson(data);
+    objReadable['video'] = findOne;
+
+    let {dowhat} = objReadable;
+    delete objReadable['dowhat'];
+    let message = {action: 'n_desk_', whichone: 'download',
+      dowhat,
+      vid,
+      info: objReadable,
+    };
+    _notice_All_Client(message, passdata);
+  }
+}
 
 /**
  * 1 click search router
@@ -104,17 +182,17 @@ function notice_browser_playlist(message, passdata) {
  * 3 fetch author video
  *
  *
- * @param message
+ * @param message{Object:{author:String,vid:String}}
  * @param passdata
  */
-function notice_deskapp_fetch_author_video(message, passdata) {
-  let {author} = message;
+function notice_deskapp_show_the_video(message, passdata) {
+  let {author, vid} = message;
   if (author) {
     let message = {
       action: 'n_desk_',
       whichone: 'search',
       dowhat: 'fetchAuthorVideo',
-      info: author,
+      info: {author, vid},
     };
     _notice_All_Client(message, passdata);
   }
@@ -131,13 +209,13 @@ function notice_deskapp_fetch_all_author(passdata) {
 
 function notice_deskapp_queue_add(message, passdata) {
   let {queue} = message;
-  // console.log(`notice_desktop_queue_update ... `);
+  console.log(`notice_deskapp_queue_add ... `);
   if (queue) {
     let message = {
-      'action': 'n_desk_',
-      'whichone': 'playlist',
-      'dowhat': 'playlistAdd',
-      queue,
+      action: 'n_desk_',
+      whichone: 'queue',
+      dowhat: 'playlistAdd',
+      info: queue,
     };
     _notice_All_Client(message, passdata);
   }
@@ -145,13 +223,13 @@ function notice_deskapp_queue_add(message, passdata) {
 
 function notice_deskapp_queue_update(message, passdata) {
   let {queue} = message;
-  // console.log(`notice_desktop_queue_update ... `);
+  console.log(`notice_deskapp_queue_update ... `);
   if (queue) {
     let message = {
-      'action': 'n_desk_',
-      'whichone': 'playlist',
-      'dowhat': 'playlistUpdate',
-      queue,
+      action: 'n_desk_',
+      whichone: 'queue',
+      dowhat: 'playlistUpdate',
+      info: queue,
     };
     _notice_All_Client(message, passdata);
   }
@@ -187,13 +265,12 @@ const daoNotice = {
 
   // *********************************************************************
 
-  notice_deskapp_fetch_author_video: notice_deskapp_fetch_author_video,
+  notice_deskapp_downloadinfo: notice_deskapp_downloadinfo,
+  notice_deskapp_show_the_video: notice_deskapp_show_the_video,
   notice_deskapp_fetch_all_author: notice_deskapp_fetch_all_author,
-
 
   notice_deskapp_queue_add: notice_deskapp_queue_add,
   notice_deskapp_queue_update: notice_deskapp_queue_update,
-
 
   notice_deskapp_heartbeat: notice_deskapp_heartbeat,
 

@@ -32,7 +32,8 @@ async function videoPost(message, passdata) {
       text: `${title}`,
     }, passdata);
 
-    daoNotice.notice_deskapp_fetch_author_video({author}, passdata);
+    daoNotice.notice_deskapp_show_the_video(
+      {author,vid}, passdata);
   }
 
 }
@@ -72,6 +73,9 @@ async function videoDelete(message, passdata) {
 }
 
 async function videoPut(message, passdata) {
+  console.log('video put');
+  console.log(`message=`);
+  console.log(message);
 
   let {video, playlist} = message;
   let {vid, downlink} = video;
@@ -98,15 +102,19 @@ async function videoPut(message, passdata) {
 /**
  *
  * @param vid {String}
+ * @param passdata
  * @returns {Promise<*>}
  */
-async function videoCheck(vid) {
+async function videoCheck(vid,passdata) {
   let findOne = await table.videoFindOneWhere({vid});
   console.log(`findOne=\n`, findOne, `\n`);
 
   if (findOne === null) {
     return false;
   } else {
+    let {author} = findOne
+    daoNotice.notice_deskapp_show_the_video(
+      {author, vid}, passdata);
     let {exists} = await daoFile.checkNewPathMP4({vid});
     return exists;
   }

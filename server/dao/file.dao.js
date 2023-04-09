@@ -73,7 +73,7 @@ async function moveMP4(video) {
   // console.log(map);
 
   let filename = map.newfileNameMP4;
-  await new Promise(resolve => setTimeout(resolve, 3000))
+  await new Promise(resolve => setTimeout(resolve, 1000))
   try {
     fs.renameSync(map.oldPathMP4, map.newPathMP4);
     console.log(`moved ok  \n${filename}`);
