@@ -38,7 +38,7 @@ function getPathElectron() {
  * @param title
  */
 function setupElectron_index_html(
-    title = null,
+  title = null,
 ) {
 
   if (title === null) {
@@ -114,10 +114,10 @@ const copyType = {
  * @param indexHtmlTitle index.html title
  */
 function setupVueToElectron(
-    indexHtmlTitle = null,
+  indexHtmlTitle = null,
 ) {
 
-  execAsync(cmd.npm_run_build, () => {
+  execAsync(cmdLine.npm_run_build, () => {
     setupElectron_index_html(indexHtmlTitle);
     setupElectron_renderer_js();
 
@@ -148,7 +148,7 @@ function execSync(cmd) {
  * npm cache clean --force
  */
 function npmCacheClean() {
-  execSync(cmd.npm_cache_clean_force);
+  execSync(cmdLine.npm_cache_clean_force);
 }
 
 /**
@@ -185,14 +185,14 @@ function execAsync(cmd = '', callback = null) {
  * npm install
  */
 function npmInstallOnWindows() {
-  execSync(cmd.npm_install_windows_terminal);
+  execSync(cmdLine.npm_install_windows_terminal);
 }
 
 /**
  * yarn install
  */
 function yarnInstallOnWindows() {
-  execSync(cmd.yarn_install_windows_terminal);
+  execSync(cmdLine.yarn_install_windows_terminal);
 }
 
 /**
@@ -212,45 +212,56 @@ function openDirElectronOutSquirrel(logIt = false) {
   execAsync(cmd);
 }
 
-/**
- * npm run make -->
- *
- * then open out/make/squirrel.windows/x64/ dir
- */
-function npmRunMakeOpenOutSquirrel() {
-  execAsync(cmd.npm_run_make, () => {
-    openDirElectronOutSquirrel();
+function npmRunStart() {
+  execSync(cmdLine.npm_run_start_windows_terminal);
+}
+
+function getPathElectronOutZip() {
+  let pathArr = ['out', 'make', 'zip', 'win32', 'x64'];
+  let pathZip = path.join(process.cwd(), ...pathArr);
+  return pathZip;
+}
+
+function openElectronZip() {
+  execSync(`start "" ${getPathElectronOutZip()}`);
+}
+
+function npmRunMakeOpenOutZip() {
+  execAsync(cmdLine.npm_make, () => {
+    openElectronZip();
   });
 }
 
-function npmRunStart() {
-  execSync(cmd.npm_run_start_windows_terminal);
+function npmRunPublishAndCopyFileToDesktop() {
+  execAsync(cmdLine.npm_publish,()=>{
+    openElectronZip();
+  });
 }
 
-const cmd = {
+const cmdLine = {
+  npm_make: `npm run make`,
+  npm_publish: `npm run publish`,
   yarn_install_windows_terminal: `start "" yarn install && exit`,
   npm_install_windows_terminal: `start "" npm install && exit`,
   // `start "" npm run start && exit`
   npm_run_start_windows_terminal: `start "" npm run start && exit`,
   // `npm run build`
   npm_run_build: `npm run build`,
-  // `npm run make`
-  npm_run_make: `npm run make`,
+
   npm_cache_clean_force: `npm cache clean --force`,
 };
 
 module.exports = {
+  npmRunPublishAndCopyFileToDesktop: npmRunPublishAndCopyFileToDesktop,
+
   copyType: copyType,
   setupVueToElectron: setupVueToElectron,
   setupElectron_index_html: setupElectron_index_html,
   setupElectron_renderer_js: setupElectron_renderer_js,
 
-  cmd: cmd,
-
   execSync: execSync,
   execAsync: execAsync,
-  openDirElectronOutSquirrel: openDirElectronOutSquirrel,
-  npmRunMakeOpenOutSquirrel: npmRunMakeOpenOutSquirrel,
+  npmRunMakeOpenOutZip: npmRunMakeOpenOutZip,
   npmRunStart: npmRunStart,
 
   npmCacheClean: npmCacheClean,
