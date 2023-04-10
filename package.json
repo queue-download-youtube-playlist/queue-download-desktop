@@ -10,7 +10,7 @@
   },
   "scripts": {
     "git_push": "git add . && git commit -m 'update' && git push --force",
-    "git_push_force": "git push ",
+    "git_push_force": "git push --force",
     "npm_install": "npm install",
     "yarn_install": "yarn install",
     "node_appjs": "node server/app.js",
