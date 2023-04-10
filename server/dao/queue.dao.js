@@ -143,6 +143,10 @@ async function queueCheck(message) {
   return exists;
 }
 
+function queueAllTaskCheck() {
+
+}
+
 const daoQueue = {
   queuePost: queuePost,
   queueDelete: queueDelete,

@@ -3,13 +3,18 @@
  - [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/youtube-playlist-download/)
 
 # connect firefox addons to windows app
-![connect](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/c7ddab3044c2f94c73d274ed5294c4cb9b4f8b30/image/connect_windows_app.png)
+![connect windows app](/image/connect_windows_app.png)
 
 # download playlist
-![download playlist](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/c7ddab3044c2f94c73d274ed5294c4cb9b4f8b30/image/click_add_playlist_icon.png)
+![download playlist](/image/click_add_playlist_icon.png)
 
 # download one video
-![download one video](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/c7ddab3044c2f94c73d274ed5294c4cb9b4f8b30/image/click_download_video.png)
+![download one video](/image/click_download_video.png)
+
+# downloading 
+![downloading video](/image/downloading_a_video.png)
+
+---
 
 # how does work?
  - after you click context menu "download video"
