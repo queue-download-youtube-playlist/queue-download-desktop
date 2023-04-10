@@ -6,7 +6,7 @@
 
 # how to download (install)?
 
-### step1: [download windows portable app from bitbucket.org](https://bitbucket.org/vacantthinker/queue-download-desktop/downloads/)
+### step1: [download windows portable app from github.com](https://github.com/queue-download-youtube-playlist/queue-download-desktop/releases/latest)
 ### step2: [install firefox extension](https://addons.mozilla.org/en-US/firefox/addon/youtube-playlist-download/)
 
 # how to use?

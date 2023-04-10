@@ -34,8 +34,8 @@ let publish_github = {
   },
 };
 let publishers = [
-  publish_bitbucket,
-  // publish_github,
+  // publish_bitbucket,
+  publish_github,
 ];
 let plugins = [
   {
