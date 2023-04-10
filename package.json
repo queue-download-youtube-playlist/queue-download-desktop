@@ -9,7 +9,7 @@
     "url": "git+https://github.com/queue-download-youtube-playlist/queue-download-desktop.git"
   },
   "scripts": {
-    "git_push": "git add . && git commit -m 'v_1_0_15_4' && git push --force",
+    "git_push": "git add . && git commit -m 'update' && git push --force",
     "git_push_force": "git push ",
     "npm_install": "npm install",
     "yarn_install": "yarn install",
