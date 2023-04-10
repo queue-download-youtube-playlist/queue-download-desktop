@@ -6,7 +6,7 @@
 
 # how to download (install)?
 
-### step1: [download windows portable app from github.com](https://github.com/queue-download-youtube-playlist/queue-download-desktop/releases/latest)
+### step1: [download windows app from releases](https://github.com/queue-download-youtube-playlist/queue-download-desktop/releases/latest)
 ### step2: [install firefox extension](https://addons.mozilla.org/en-US/firefox/addon/youtube-playlist-download/)
 
 # how to use?
