@@ -47,21 +47,21 @@ function notice_browser_firefox_notice(message, passdata) {
   );
 }
 
-/**
- * {vid, uuid}
- * @param message
- * @param passdata
- */
-function notice_browser_image(message, passdata) {
-  let {vid} = message;
-  if (vid) {
-    let message = {
-      action: 'notice_browser_gogetjpg', vid,
-      url: `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`,
-    };
-    _notice_All_Client(message, passdata);
-  }
-}
+// /**
+//  * {vid, uuid}
+//  * @param message
+//  * @param passdata
+//  */
+// function notice_browser_image(message, passdata) {
+//   let {vid} = message;
+//   if (vid) {
+//     let message = {
+//       action: 'notice_browser_gogetjpg', vid,
+//       url: `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`,
+//     };
+//     _notice_All_Client(message, passdata);
+//   }
+// }
 
 /**
  *
@@ -258,7 +258,7 @@ function getCurrentTime() {
 }
 
 const daoNotice = {
-  notice_browser_image: notice_browser_image,
+  // notice_browser_image: notice_browser_image,
   notice_browser_mp4: notice_browser_mp4,
   notice_browser_playlist: notice_browser_playlist,
   notice_browser_firefox_notice: notice_browser_firefox_notice,

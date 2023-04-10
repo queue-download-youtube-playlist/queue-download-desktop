@@ -55,14 +55,8 @@ async function downloadMP4UseCMD(message, passdata) {
   let fileNameMP4 = `${vid}${endsMP4}`;
 
   let {tmplocation} = await daoFile.getConfig();
-
   let aria2c = getAria2EXE();
-
   const arr = [
-    // `start`,
-    // `"downloading... ${filename}"`,
-    // `/MIN`,
-
     `"${aria2c}"`,
     `--file-allocation=none`,
     `--download-result=hide`,
@@ -77,7 +71,6 @@ async function downloadMP4UseCMD(message, passdata) {
   let command = arr.reduce((str, val) => str.concat(' ', val));
 
   console.log('command=', command);
-  passdata.downloading = true;
   const coffeeProcess = exec(command);
   // todo download before show the video, scroll find it
   daoNotice.notice_deskapp_show_the_video({author, vid}, passdata);
@@ -103,6 +96,7 @@ async function downloadMP4UseCMD(message, passdata) {
  * @returns {Promise<void>}
  */
 async function downloadMP4OK(message, passdata, moveFileBoolean) {
+
   const {video, playlist} = message;
   const {vid, filename} = video;
 
@@ -130,10 +124,10 @@ async function downloadMP4OK(message, passdata, moveFileBoolean) {
         await daoFile.moveMP4({vid});
 
         // todo notice browser go got the jpg
-        let message = {
-          vid,
-        };
-        daoNotice.notice_browser_image(message, passdata);
+        // let message = {
+        //   vid,
+        // };
+        // daoNotice.notice_browser_image(message, passdata);
 
         // todo notice download ok
         daoNotice.notice_browser_firefox_notice({
@@ -173,19 +167,21 @@ async function gotodownloadMP4(message, passdata) {
       title: 'dont need download',
       text: `exists \n${title}`,
     }, passdata);
-
     await downloadMP4OK(message, passdata, false);
-  } else {
+  }
+
+  else {
     if (passdata.downloading) {
-      daoNotice.notice_browser_firefox_notice({
-        title: 'downloading something please wait finished',
-        text: ``,
-      }, passdata);
+      // daoNotice.notice_browser_firefox_notice({
+      //   title: 'downloading something please wait',
+      //   text: ``,
+      // }, passdata);
     } else {
       daoNotice.notice_browser_firefox_notice({
         title: 'downloading',
         text: `${title}`,
       }, passdata);
+      passdata.downloading = true;
       await downloadMP4UseCMD(message, passdata);
     }
   }

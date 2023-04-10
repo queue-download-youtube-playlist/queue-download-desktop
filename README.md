@@ -11,7 +11,7 @@
 
 # how to use?
  - step1: keep windows portable app running. keep firefox extension running.
- - step2: click [icon](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/9323a0e142ea5c2c9469f5e49e64f8761ddf8ac7/image/48.png)
+ - step2: click ![icon](https://bitbucket.org/vacantthinker/queue-download-desktop/raw/9323a0e142ea5c2c9469f5e49e64f8761ddf8ac7/image/48.png)
  - firefox notification. connect success
  - step3: check windows portable app, if the time is ticking. you're success.
 

@@ -252,7 +252,8 @@ const cmdLine = {
 };
 
 module.exports = {
-  npmRunPublishAndCopyFileToDesktop: npmRunPublishAndCopyFileToDesktop,
+  npmRunPublishAndCopyFileToDesktop:
+  npmRunPublishAndCopyFileToDesktop,
 
   copyType: copyType,
   setupVueToElectron: setupVueToElectron,

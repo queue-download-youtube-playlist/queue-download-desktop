@@ -1,3 +1,8 @@
-const {npmRunMakeOpenOutZip} = require('./util/index.electron.vue');
+const {
+  npmRunMakeOpenOutZip,
+  npmRunPublishAndCopyFileToDesktop,
+} = require(
+  './util/index.electron.vue');
 
-npmRunMakeOpenOutZip();
+// npmRunMakeOpenOutZip();
+npmRunPublishAndCopyFileToDesktop();

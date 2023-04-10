@@ -33,7 +33,7 @@ async function openVideo(message, passdata) {
 }
 
 async function openExtensionPage() {
-  let url = `"https://addons.mozilla.org/en-US/firefox/addon/ytb-playlist-download-queue/"`;
+  let url = `"https://addons.mozilla.org/zh-CN/firefox/addon/youtube-playlist-download/"`;
   try {
     execSync(`start "" ${url}`);
   } catch (e) {
