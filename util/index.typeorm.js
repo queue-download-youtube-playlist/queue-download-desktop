@@ -40,7 +40,29 @@ function findPathTarget() {
   return pathTarget;
 }
 
+function convertType(dbtype) {
+  const typeObj = {
+    varchar: "string",
+    text: "string",
+    boolean: "boolean",
+    int: "number"
+  }
+  return typeObj[dbtype]
+}
 
+function convertEntityToResultType(pathTarget, filename) {
+  const requirePath = path.join(pathTarget, filename);
+  const entityObj = require(requirePath);
+  const retObj = {};
+  Object.keys(entityObj.columns).forEach((key_) => {
+    let val = entityObj.columns[key_];
+    let jstype = convertType(val.type);
+    retObj[key_] = jstype;
+  });
+  console.log('meslog ', `retObj=\n`, retObj);
+  const retstring = JSON.stringify(retObj,null,"");
+  return retstring;
+}
 
 /**
  * gene util.typeorm.js file
@@ -55,6 +77,7 @@ function geneUtilTypeormJs(pathTarget = null) {
     const reg = /.+(?=\.entity\.js)/;
     const mat = filename.match(reg);
     const entityName = mat[0]; // eg: config --> config.entity.js
+    const retstring = convertEntityToResultType(pathTarget, filename);
 
     const line =
         `
@@ -70,7 +93,7 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * save ${entityName}
    * @param entityObj
-   * @returns {Promise<Object>}
+   * @returns {Promise<void>}
    */
   ${entityName}Insert: async (entityObj) => {
     await dataSource.getRepository('${entityName}').insert(entityObj);
@@ -84,36 +107,46 @@ function geneUtilTypeormJs(pathTarget = null) {
     return await dataSource.getRepository('${entityName}').delete(options);
   },
   /**
-   * {id: 1}
-   * @param entityNew
+   * ${entityName}New, {id: 1}
+   * @param ${entityName}New
    * @param options
-   * @returns {Promise<Object>}
+   * @returns {Promise<${retstring}>}
    */
-  ${entityName}Update: async (entityNew, options) => {
-    const findObj = await dataSource.getRepository('${entityName}').findOneBy(options);
-    await dataSource.getRepository('${entityName}').merge(findObj, entityNew);
-    return await dataSource.getRepository('${entityName}').save(findObj)
+  ${entityName}Update: async (${entityName}New, options) => {
+    await dataSource.getRepository('${entityName}').update(options, ${entityName}New)
+    return await dataSource.getRepository('${entityName}').findOneBy(options);
+  },
+  /**
+   * {} --> updateall
+   * 
+   * @param ${entityName}New
+   * @returns {Promise<void>}
+   */
+  ${entityName}UpdateAll: async (${entityName}New) => {
+    await dataSource.getRepository('${entityName}').update({}, ${entityName}New)
   },
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<Object>}
+   * @returns {Promise<null|${retstring}>}
    */
   ${entityName}FindOneWhere: async (options) => {
-    return await dataSource.getRepository('${entityName}').findOneBy(options);
+    let ret = await dataSource.getRepository('${entityName}').findOneBy(options);
+    return ret ? ret : null
   },
   /**
    * {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<Object>}
+   * @returns {Promise<null|${retstring}>}
    */
   ${entityName}FindOne: async (options) => {
-    return await dataSource.getRepository('${entityName}').findOne(options);
+    let ret = await dataSource.getRepository('${entityName}').findOne(options);
+    return ret ? ret : null
   },
   /**
    * null or {select: {name: 'mari'}, where: {id: 1}}
    * @param options
-   * @returns {Promise<Array>}
+   * @returns {Promise<[${retstring}]>}
    */
   ${entityName}Find: async (options) => {
     if (options === null) {
@@ -125,7 +158,7 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * {id: 1}
    * @param options
-   * @returns {Promise<Array>}
+   * @returns {Promise<[${retstring}]>}
    */
   ${entityName}FindWhere: async (options) => {
     return await dataSource.getRepository('${entityName}').findBy(options);
@@ -133,7 +166,7 @@ function geneUtilTypeormJs(pathTarget = null) {
   /**
    * {name: 'mari'} to {name: Like('%mari%')}
    * @param options
-   * @returns {Promise<Array>}
+   * @returns {Promise<[${retstring}]>}
    */
   ${entityName}FindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -216,8 +249,8 @@ module.exports = {
   pathTarget = getPathByLevelUp(pathTarget);
   const file = path.join(pathTarget, stringList.filename_datasource);
   fs.writeFileSync(file, text);
-  console.log(`file=\n`, file, `\n`);
-  console.log(`text=\n`, text, `\n`);
+  // console.log(`file=\n`, file, `\n`);
+  // console.log(`text=\n`, text, `\n`);
 }
 
 /**
@@ -276,8 +309,8 @@ module.exports = {
   const file = getPathByLevelUp(pathTarget,
       stringList.filename_util_datasource);
   fs.writeFileSync(file, text);
-  console.log(`file=\n`, file, `\n`);
-  console.log(`text=\n`, text, `\n`);
+  // console.log(`file=\n`, file, `\n`);
+  // console.log(`text=\n`, text, `\n`);
 }
 
 /**

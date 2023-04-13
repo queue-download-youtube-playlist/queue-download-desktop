@@ -1,21 +1,23 @@
-const {daoQueue} = require('../dao/queue.dao');
+const {queueUpdateTotal} = require('../dao/queue.dao');
+const {taskPost, taskFindAll} = require('../dao/task.dao');
 const wrapper = function(passdata) {
   const express = require('express');
   const taskRouter = express.Router();
-  const {daoTask} = require('../dao/task.dao');
 
   /**
    * create a lot of task by playlist
    */
-  taskRouter.post('/', async (req, res) => {
+  taskRouter.post('/',  (req, res) => {
     res.status(200).send();
-    await daoTask.taskPost(req.body, passdata);
-    await daoQueue.queueUpdateTotal(req.body, passdata)
+     taskPost(req.body, passdata).then(()=>{
+       queueUpdateTotal(req.body, passdata);
+     });
   });
 
-  taskRouter.get('/all', async (req, res) => {
-    const value = await daoTask.taskGetAll(req.params, passdata);
-    res.status(200).send(value);
+  taskRouter.get('/all',  (req, res) => {
+      taskFindAll(req.params, passdata).then((value)=>{
+        res.status(200).send(value)
+      })
   });
 
   return taskRouter;

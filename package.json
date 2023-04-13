@@ -1,7 +1,7 @@
 {
   "name": "queue-download-desktop",
   "productName": "youtube_playlist_download_queue",
-  "version": "1.0.15.4",
+  "version": "1.0.15.6",
   "description": "youtube playlist download one by one, youtube video download, youtube thumbnail download ",
   "main": ".webpack/main",
   "repository": {
@@ -43,7 +43,9 @@
     "css-loader": "^6.0.0",
     "electron": "23.2.0",
     "node-loader": "^2.0.0",
-    "style-loader": "^3.0.0"
+    "style-loader": "^3.0.0",
+    "@types/node": "latest",
+    "archiver": "^5.3.1"
   },
   "dependencies": {
     "better-sqlite3": "^8.1.0",

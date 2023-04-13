@@ -1,5 +1,3 @@
-const {table} = require('../db/util.typeorm');
-
 function _notice_All_Client(message, passdata) {
   const clients = passdata.socketMap;
   Object.values(clients).forEach(conn => {
@@ -13,26 +11,16 @@ function _notice_All_Client(message, passdata) {
  * @param passdata app.js passdata
  */
 function notice_browser_mp4(message, passdata) {
-  let {vid, playlist} = message;
-  console.log(`notice.dao.js notice_browser_mp4
-     vid ${vid}`, '\n', 'playlist=', playlist);
-
-  if (vid) {
-    let action = 'notice_browser_gogetmp4';
-
-    let message = {
-      vid,
-      playlist,
-      action,
-      // type: `xdownload`,
-    };
-    _notice_All_Client(message, passdata);
-  }
+  _notice_All_Client({
+    ...message,
+    action: 'notice_browser_gogetmp4',
+  }, passdata);
 }
 
 /**
  *
- * @param message{Object:{title:String, text:String}}
+ * @param message{Object:{
+ * title:String, text:String,timeout?:number}}
  * @param passdata
  */
 function notice_browser_firefox_notice(message, passdata) {
@@ -40,28 +28,18 @@ function notice_browser_firefox_notice(message, passdata) {
   let titleDefault = 'youtube playlist download queue', textDefault = '';
   title = title ? title : titleDefault;
   text = text ? text : textDefault;
+  let timeout = 3;
+  timeout = message.hasOwnProperty('timeout')
+    ? message.timeout : timeout;
 
   _notice_All_Client({
-      action: `notice_firefox_notice`, title: String(title), text: String(text),
+      action: `notice_firefox_notice`,
+      title: String(title),
+      text: String(text),
+      timeout: parseInt(String(timeout)),
     }, passdata,
   );
 }
-
-// /**
-//  * {vid, uuid}
-//  * @param message
-//  * @param passdata
-//  */
-// function notice_browser_image(message, passdata) {
-//   let {vid} = message;
-//   if (vid) {
-//     let message = {
-//       action: 'notice_browser_gogetjpg', vid,
-//       url: `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`,
-//     };
-//     _notice_All_Client(message, passdata);
-//   }
-// }
 
 /**
  *
@@ -85,7 +63,7 @@ function notice_browser_playlist(message, passdata) {
  * @param data{String}
  * @return {Object}
  */
-function handleDataToJson(data) {
+function handleDownloadingDataToJson(data) {
   let regDownInfo = /(?<=\[#\w{6} )(.+)(?=\])/;
   let regComplete = /Download complete/;
   if (regDownInfo.test(data)) {
@@ -111,15 +89,17 @@ function handleDataToJson(data) {
       let itemConnection = split[1];
       let regConnNum = /(?<=\:)(.+)/;
       let matConnNum = itemConnection.match(regConnNum);
-      let cn = matConnNum[0];
+      let cn = 0;
+      cn = matConnNum[0];
 
       let itemDownloadSpeed = split[2];
       let regDownloadSpeed = /(?<=\:)(.+)/;
       let matDownloadSpeed = itemDownloadSpeed.match(regDownloadSpeed);
-      let speed = matDownloadSpeed[0];
+      let speed = '0';
+      speed = matDownloadSpeed[0];
 
       let itemEstimatedTime = 'null';
-      let eta = 'null';
+      let eta = '0s';
       if (split.length === 4) {
         itemEstimatedTime = split[3];
         let regEta = /(?<=\:)(.+)/;
@@ -133,42 +113,70 @@ function handleDataToJson(data) {
         cn,
         speed,
         eta,
-        data,
-        dowhat: 'updateDownInfo',
+
       };
       return obj;
+    } else {
+      return null;
     }
-
   } else if (regComplete.test(data)) {
-    console.log(data);
-    let obj = {
-      data,
-      dowhat: 'completeDownInfo',
-    };
-    return obj;
+    // console.log(data);
+    // let obj = {
+    //   data,
+    //   dowhat: 'completeDownInfo',
+    // };
+    // return obj;
+    return null;
   }
 }
 
 /**
  *
- * @param message{Object:{data:String, vid:String}}
+ * @param message{Object:{data:String, vid:String,video:Object}}
  * @param passdata
  * @return {Promise<void>}
  */
-async function notice_deskapp_downloadinfo(message, passdata) {
-  let {data, vid} = message;
+function notice_deskapp_downloading(message, passdata) {
+  let {data, vid, video} = message;
   if (data) {
-    let findOne = await table.videoFindOneWhere({vid});
 
-    let objReadable = handleDataToJson(data);
-    objReadable['video'] = findOne;
+    let objReadable = handleDownloadingDataToJson(data);
+    if (objReadable) {
+      let message = {
+        action: 'n_desk_',
+        whichone: 'download',
+        dowhat: 'updateDownInfo',
+        vid,
+        info: objReadable,
+      };
 
-    let {dowhat} = objReadable;
-    delete objReadable['dowhat'];
-    let message = {action: 'n_desk_', whichone: 'download',
-      dowhat,
+      _notice_All_Client(message, passdata);
+    } else {
+      // objReadable is null or undefined
+    }
+  }
+}
+
+function notice_deskapp_download_complete(message, passdata) {
+  let {vid} = message;
+  if (vid) {
+    let message = {
+      action: 'n_desk_',
+      whichone: 'download',
+      dowhat: 'completeDownInfo',
       vid,
-      info: objReadable,
+    };
+    _notice_All_Client(message, passdata);
+  }
+}
+function notice_deskapp_download_before(message, passdata) {
+  let {vid} = message;
+  if (vid) {
+    let message = {
+      action: 'n_desk_',
+      whichone: 'download',
+      dowhat: 'beforeDownInfo',
+      vid,
     };
     _notice_All_Client(message, passdata);
   }
@@ -182,16 +190,17 @@ async function notice_deskapp_downloadinfo(message, passdata) {
  * 3 fetch author video
  *
  *
- * @param message{Object:{author:String,vid:String}}
+ * @param message{Object:{video:Object,vid:String}}
  * @param passdata
  */
 function notice_deskapp_show_the_video(message, passdata) {
-  let {author, vid} = message;
-  if (author) {
+  let {video, vid} = message;
+  if (vid) {
+    let {author} = video;
     let message = {
       action: 'n_desk_',
       whichone: 'search',
-      dowhat: 'fetchAuthorVideo',
+      dowhat: 'showTheVideo',
       info: {author, vid},
     };
     _notice_All_Client(message, passdata);
@@ -257,16 +266,27 @@ function getCurrentTime() {
   return dateFormat;
 }
 
-const daoNotice = {
+module.exports = {
   // notice_browser_image: notice_browser_image,
   notice_browser_mp4: notice_browser_mp4,
+
   notice_browser_playlist: notice_browser_playlist,
   notice_browser_firefox_notice: notice_browser_firefox_notice,
 
   // *********************************************************************
 
-  notice_deskapp_downloadinfo: notice_deskapp_downloadinfo,
-  notice_deskapp_show_the_video: notice_deskapp_show_the_video,
+  notice_deskapp_download_before:
+  notice_deskapp_download_before,
+
+  notice_deskapp_download_complete:
+  notice_deskapp_download_complete,
+
+  notice_deskapp_downloading:
+  notice_deskapp_downloading,
+
+  notice_deskapp_show_the_video:
+  notice_deskapp_show_the_video,
+
   notice_deskapp_fetch_all_author: notice_deskapp_fetch_all_author,
 
   notice_deskapp_queue_add: notice_deskapp_queue_add,
@@ -274,8 +294,4 @@ const daoNotice = {
 
   notice_deskapp_heartbeat: notice_deskapp_heartbeat,
 
-};
-
-module.exports = {
-  daoNotice: daoNotice,
 };

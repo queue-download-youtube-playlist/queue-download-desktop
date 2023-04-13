@@ -14,6 +14,6 @@ module.exports = {
     },
     appdatacache: {
       type: 'varchar', default: '',
-    }
+    },
   },
 };

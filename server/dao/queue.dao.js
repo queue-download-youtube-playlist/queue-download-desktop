@@ -1,5 +1,18 @@
-const {daoNotice} = require('./notice.dao');
-const {table} = require('../db/util.typeorm.js');
+const {table} = require('../db/util.typeorm');
+const {taskFindAllFinishedTrue, taskFindOneFalse, taskDelete} = require(
+  './task.dao');
+const {
+  comVideoGet, comVideoUpdateDownloading, comVideoUpdateExists,
+  comNoticeMp4Check,
+}
+  = require('./_common.dao');
+
+const {
+  notice_browser_firefox_notice,
+  notice_deskapp_queue_update,
+  notice_browser_playlist,
+  notice_deskapp_queue_add,
+} = require('./notice.dao');
 
 function titleFilter(title) {
   let reg = /(.+)(?=- YouTube)/;
@@ -21,15 +34,15 @@ async function queuePost(message, passdata) {
   let findOne = await table.queueFindOneWhere({playlist});
   if (findOne === null) {
     await table.queueInsert(queue);
-    // daoNotice.notice_browser_firefox_notice({
+    // notice_browser_firefox_notice({
     //   title: 'new playlist data',
     //   text: `${title}`,
     // }, passdata);
-    daoNotice.notice_deskapp_queue_add({queue}, passdata);
+    notice_deskapp_queue_add({queue}, passdata);
     // todo notice firefox go get playlist all video id
-    daoNotice.notice_browser_playlist({playlist}, passdata);
+    notice_browser_playlist({playlist}, passdata);
   } else {
-    // daoNotice.notice_browser_firefox_notice({
+    // notice_browser_firefox_notice({
     //   title: 'exists playlist',
     //   text: `${title}`,
     // }, passdata);
@@ -45,31 +58,18 @@ async function queueDelete(message) {
 
   } else {
     await table.queueDelete(findKey);
-    await table.taskDelete(findKey);
+    await taskDelete(findKey);
   }
 }
 
 /**
  *
- * @param message {Object:{playlist:String}}
+ * @param message {{playlist: String, progress: number}}
  * @returns {Promise<number>}
  */
 async function queueUpdateProgress(message) {
-  let {playlist} = message;
-
-  try {
-    let searchObj = {'playlist': playlist, 'finished': true};
-    let findManyTask = await table.taskFindWhere(searchObj);
-    let progress = findManyTask.length;
-    await table.queueUpdate({progress}, {playlist});
-
-    return progress;
-  } catch (e) {
-    console.log(`e=`);
-    console.log(e);
-    let progress = 0;
-    return progress;
-  }
+  let {progress, playlist} = message;
+  await table.queueUpdate({progress}, {playlist});
 }
 
 async function queueUpdateTotal(message, passdata) {
@@ -79,7 +79,7 @@ async function queueUpdateTotal(message, passdata) {
   } = message;
 
   await table.queueUpdate({playlist, total}, {playlist});
-  daoNotice.notice_deskapp_queue_update({
+  notice_deskapp_queue_update({
     queue: {playlist, total},
   }, passdata);
 
@@ -106,20 +106,20 @@ async function queueGetAll() {
  * @param passdata
  */
 async function queueDownloadOne(message, passdata) {
+  console.log(`queue download one`)
   let {playlist} = message;
-  let findOne = await table.taskFindOneWhere({
-    playlist, 'finished': false,
-  });
+  let findOne = await taskFindOneFalse({playlist});
   if (findOne) {
     let {vid} = findOne;
-    daoNotice.notice_browser_mp4({vid, playlist}, passdata);
+    await comNoticeMp4Check({vid, playlist}, passdata);
 
   } else {
     // console.log(`queueDownloadOne playlist progress 100% !!!`);
     // console.log(options);
-    daoNotice.notice_browser_firefox_notice({
+    await notice_browser_firefox_notice({
       title: 'dont need download!',
       text: 'playlist progress is 100%',
+      timeout: 240,
     }, passdata);
   }
 
@@ -132,32 +132,38 @@ async function queueDownloadOne(message, passdata) {
  */
 async function queueCheck(message) {
   console.log('queue check');
-  console.log(`message=`);
-  console.log(message);
 
   let {playlist} = message;
   let findOneWhere = await table.queueFindOneWhere({playlist});
-  let exists = findOneWhere ? true : false;
-  console.log(`exists=`);
-  console.log(exists);
-  return exists;
+  return !!findOneWhere;
 }
 
-function queueAllTaskCheck() {
-
+/**
+ *
+ * @return {Promise<void>}
+ */
+async function queueUpdateAllTask() {
+  let arr = await table.queueFind(null);
+  for (const value of arr) {
+    let {playlist} = value;
+    let progress = await taskFindAllFinishedTrue({playlist});
+    await queueUpdateProgress({playlist, progress});
+  }
 }
 
-const daoQueue = {
+module.exports = {
   queuePost: queuePost,
   queueDelete: queueDelete,
-  queueUpdateProgress: queueUpdateProgress,
+  queueUpdateProgress:
+  queueUpdateProgress,
+
   queueUpdateTotal: queueUpdateTotal,
 
   queueGetAll: queueGetAll,
   queueCheck: queueCheck,
   queueDownloadOne: queueDownloadOne,
-};
 
-module.exports = {
-  daoQueue: daoQueue,
+  // *********
+  queueUpdateAllTask:
+  queueUpdateAllTask,
 };

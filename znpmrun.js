@@ -1,8 +1,10 @@
 const {
   npmRunMakeOpenOutZip,
-  npmRunPublishAndCopyFileToDesktop,
+  npmRunPublishAndCopyFileToDesktop, openElectronZip,
 } = require(
   './util/index.electron.vue');
 
 // npmRunMakeOpenOutZip();
-npmRunPublishAndCopyFileToDesktop();
+// npmRunPublishAndCopyFileToDesktop();
+
+openElectronZip()

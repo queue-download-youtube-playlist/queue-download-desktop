@@ -1,16 +1,16 @@
+const {openExtensionPage, openVideo} = require('../dao/open.dao');
 const wrapper = function(passdata) {
   const express = require('express');
   const openRouter = express.Router();
-  const {daoOpen} = require('../dao/open.dao');
 
-  openRouter.get('/localvideo/:vid', async (req, res) => {
+  openRouter.get('/localvideo/:vid',  (req, res) => {
     res.status(200).send();
-    await daoOpen.openVideo(req.params, passdata);
+     openVideo(req.params, passdata);
   });
 
-  openRouter.get('/browserpage/extension', async (req, res) => {
+  openRouter.get('/browserpage/extension',  (req, res) => {
     res.status(200).send();
-    await daoOpen.openExtensionPage();
+     openExtensionPage();
   });
   return openRouter;
 };

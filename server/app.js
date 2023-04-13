@@ -1,7 +1,6 @@
 'use strict';
-
-const fs = require('fs');
 const path = require('path');
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -9,9 +8,9 @@ const {WebSocketServer} = require('ws');
 const http = require('http');
 const {v4: uuidv4} = require('uuid');
 
-const {dbInitValue} = require('./db/datasource.js');
 const {setupRouterList} = require('./util.express');
-const {dataSource} = require('./db/datasource');
+const {notice_deskapp_heartbeat} = require('./dao/notice.dao');
+const {dbInitFnController} = require('./controller/dbinit.controller');
 
 //------------------------------------------------------------
 
@@ -19,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-// app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 const socketMap = {};
 const hostname = 'localhost';
@@ -40,62 +39,31 @@ webSocketServer.on('connection', (connect) => {
   socketMap[uuid] = connect;
   console.log(`new uuid=\n`, uuid, `\n`);
 
-  connect.on('message', (data) => { // heart_firefox
+  function handleReceiveMessage(data) {
     let message = JSON.parse(String(data));
     switch (message['action']) {
       case 'heart_firefox':
-        const {daoNotice} = require('./dao/notice.dao.js');
-        daoNotice.notice_deskapp_heartbeat(message, passdata);
+        notice_deskapp_heartbeat(message, passdata);
         break;
       case 'login_desktop':
         console.log('desktop connected .....');
         break;
     }
+  }
+
+  connect.on('message', (data) => { // heart_firefox
+    handleReceiveMessage(data);
   });
 });
 
-async function initialDir(connection) {
-  let options = {id: 1};
-  let findOneBy = await connection.getRepository('config')
-    .findOneBy(options);
-  const homedir = require('os').homedir();
-  const path = require('path');
-  let tmplocation = path.join(homedir,
-    'AppData', 'Local', 'Temp', 'youtube_playlist_download_queue');
-  let savelocation = path.join(homedir, 'Desktop', 'QueueDownload');
-  let appdatacache = path.join(homedir,
-    'AppData', 'Roaming', 'youtube_playlist_download_queue', 'downloadvideo');
-  let configObj = {savelocation, tmplocation, appdatacache};
-  if (findOneBy === null) {
-    connection.getRepository('config').save(configObj);
-
-    if (fs.existsSync(savelocation) === false) {
-      fs.mkdirSync(savelocation, {recursive: true});
-    }
-  } else {
-    const findObj = await dataSource.getRepository('config').findOneBy(options);
-    await dataSource.getRepository('config').merge(findObj, configObj);
-    await dataSource.getRepository('config').save(findObj);
-
-    fs.rmSync(tmplocation, {recursive: true, force: true});
-  }
-
-  if (fs.existsSync(appdatacache) === false) {
-    fs.mkdirSync(appdatacache, {recursive: true});
-  }
-  if (fs.existsSync(tmplocation) === false) {
-    fs.mkdirSync(tmplocation, {recursive: true});
-  }
-}
-
-dbInitValue(async (connection) => {
-  await initialDir(connection);
-});
-
+dbInitFnController().then(r => null);
 setupRouterList(app, passdata);
 server.listen(port, () => {
+  console.clear();
+  console.log(`process.versions.modules=${process.versions.modules}`);
   console.log(url);
   console.log(`started ${hostname} ${port} --- with websocket`);
+
 });
 
 module.exports = {

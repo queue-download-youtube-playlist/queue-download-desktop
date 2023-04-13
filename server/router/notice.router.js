@@ -1,20 +1,23 @@
+const {
+  notice_deskapp_fetch_all_author, notice_browser_playlist,
+} = require('../dao/notice.dao');
+const {comNoticeMp4Check} = require('../dao/_common.dao');
 const wrapper = function(passdata) {
   const express = require('express');
   const noticeRouter = express.Router();
-  const {daoNotice} = require('../dao/notice.dao');
 
-  noticeRouter.post('/mp4', async (req, res) => {
+  noticeRouter.post('/mp4',  (req, res) => {
     res.status(200).send();
-    await daoNotice.notice_browser_mp4(req.body, passdata);
+     comNoticeMp4Check(req.body, passdata);
   });
-  noticeRouter.post('/playlist/', async (req, res) => {
+  noticeRouter.post('/playlist/',  (req, res) => {
     res.status(200).send();
-    daoNotice.notice_browser_playlist(req.body, passdata);
+     notice_browser_playlist(req.body, passdata);
   });
 
-  noticeRouter.get('/fetchallauthor', async (req, res) => {
+  noticeRouter.get('/fetchallauthor',  (req, res) => {
     res.status(200).send();
-    daoNotice.notice_deskapp_fetch_all_author(passdata);
+     notice_deskapp_fetch_all_author(passdata);
   });
 
   return noticeRouter;

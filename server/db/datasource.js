@@ -1,9 +1,9 @@
 'use strict';
-      
+
 const {DataSource} = require('typeorm');
 const {
-  getEntitySchemaList, 
-  getDatabasePath
+  getEntitySchemaList,
+  getDatabasePath,
 } = require('./util.datasource.js');
 
 const dataSource = new DataSource({
@@ -25,7 +25,7 @@ module.exports = {
   dataSource: dataSource,
   dbInitValue: (callback) => {
     dataSource.initialize().then(async (connection) => {
-      callback(connection)
-    })
-  }
+      callback(connection);
+    });
+  },
 };

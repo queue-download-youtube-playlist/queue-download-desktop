@@ -7,13 +7,13 @@ module.exports = {
     playlist: {
       primary: true,
       generated: false,
-      type: 'varchar', default: ''
+      type: 'varchar', default: '',
     },
     title: {
-      type: 'varchar', default: ''
+      type: 'varchar', default: '',
     },
     targetlink: {
-      type: 'varchar', default: ''
+      type: 'varchar', default: '',
     },
     type: {
       type: 'int', default: 0,

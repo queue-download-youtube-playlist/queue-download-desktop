@@ -1,6 +1,9 @@
 # intellij idea
 .idea
 
+QueueDownload
+*.zip
+
 # nodejs
 node_modules
 

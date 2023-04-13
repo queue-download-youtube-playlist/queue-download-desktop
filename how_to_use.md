@@ -11,8 +11,8 @@
 # download one video
 ![download one video](/image/click_download_video.png)
 
-# downloading 
-![downloading video](/image/downloading_a_video.png)
+# tmplocation 
+![tmplocation video](/image/downloading_a_video.png)
 
 ---
 
@@ -32,7 +32,7 @@
      - if download link exists, true. 
        - go to download video
  - when the download starting
-   - notification: downloading
+   - notification: tmplocation
    - the windows app will show the download progress
      - eg: filesize, download progress, download speed
  - when the download finished

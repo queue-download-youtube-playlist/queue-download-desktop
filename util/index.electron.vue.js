@@ -263,6 +263,9 @@ module.exports = {
   execSync: execSync,
   execAsync: execAsync,
   npmRunMakeOpenOutZip: npmRunMakeOpenOutZip,
+
+  openElectronZip: openElectronZip,
+
   npmRunStart: npmRunStart,
 
   npmCacheClean: npmCacheClean,
