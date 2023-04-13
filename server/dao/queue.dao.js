@@ -161,7 +161,9 @@ module.exports = {
 
   queueGetAll: queueGetAll,
   queueCheck: queueCheck,
-  queueDownloadOne: queueDownloadOne,
+
+  queueDownloadOne:
+  queueDownloadOne,
 
   // *********
   queueUpdateAllTask:

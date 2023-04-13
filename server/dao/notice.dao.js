@@ -169,14 +169,16 @@ function notice_deskapp_download_complete(message, passdata) {
     _notice_All_Client(message, passdata);
   }
 }
+
 function notice_deskapp_download_before(message, passdata) {
-  let {vid} = message;
+  let {vid, video} = message;
   if (vid) {
     let message = {
       action: 'n_desk_',
       whichone: 'download',
       dowhat: 'beforeDownInfo',
       vid,
+      info: {vid, video},
     };
     _notice_All_Client(message, passdata);
   }
@@ -268,7 +270,8 @@ function getCurrentTime() {
 
 module.exports = {
   // notice_browser_image: notice_browser_image,
-  notice_browser_mp4: notice_browser_mp4,
+  notice_browser_mp4:
+  notice_browser_mp4,
 
   notice_browser_playlist: notice_browser_playlist,
   notice_browser_firefox_notice: notice_browser_firefox_notice,

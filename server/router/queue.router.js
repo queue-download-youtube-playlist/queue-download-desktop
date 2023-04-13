@@ -14,9 +14,9 @@ const wrapper = function(passdata) {
      queuePost(req.body, passdata);
   });
 
-  queueRouter.get('/download/:playlist',  (req, res) => {
+  queueRouter.get('/download/:playlist',  async (req, res) => {
+    await     queueDownloadOne(req.params, passdata);
     res.status(200).send();
-     queueDownloadOne(req.params, passdata);
   });
 
   queueRouter.delete('/',  (req, res) => {

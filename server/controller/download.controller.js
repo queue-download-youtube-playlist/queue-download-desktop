@@ -2,9 +2,10 @@ require('fs');
 const path = require('path');
 const {exec} = require('node:child_process');
 
-const {notice_browser_firefox_notice, notice_deskapp_show_the_video,
+const {notice_browser_firefox_notice,
   notice_deskapp_downloading, notice_deskapp_queue_update, notice_deskapp_download_complete,
   notice_deskapp_download_before,
+  notice_deskapp_show_the_video,
 } = require('../dao/notice.dao');
 const {queueDownloadOne, queueUpdateProgress} = require('../dao/queue.dao');
 const {taskFindAllFinishedTrue, taskUpdate} = require('../dao/task.dao');
@@ -83,7 +84,9 @@ async function downloadMP4UseCMD(message, passdata) {
   // console.log('command=', command);
   const coffeeProcess = exec(command);
   // todo download before show the video, scroll find it
-  notice_deskapp_download_before({vid}, passdata)
+  notice_deskapp_download_before({vid, video}, passdata)
+  // notice_deskapp_show_the_video({vid, video}, passdata);
+
   coffeeProcess.stdout.on('data', (data) => {
     notice_deskapp_downloading({data, video, vid}, passdata)
   });

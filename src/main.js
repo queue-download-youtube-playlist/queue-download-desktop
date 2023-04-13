@@ -10,12 +10,23 @@ require('update-electron-app')();
 // express js server
 let {expressStart} = require('../server/app');
 
+function getTitle(app) {
+  let name = app.getName();
+  let version = app.getVersion();
+  let title = name.replace(/_/g, ' ')
+    .concat(' ', version);
+  return title;
+}
+
 const createWindow = () => {
   const {width, height} = screen.getPrimaryDisplay().workArea;
   const number = 0.6;
+  let title = getTitle(app);
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     icon: path.join('image', 'icon.ico'),
+    title,
 
     minWidth: width * number,
     minHeight: height * number,
@@ -33,7 +44,7 @@ const createWindow = () => {
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  mainWindow.maximize()
+  // mainWindow.maximize()
 
   session
     .defaultSession
