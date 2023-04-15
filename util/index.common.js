@@ -111,8 +111,10 @@ module.exports = {
   readEnvFile: readEnvFile,
   readPackageJson: readPackageJson,
 
-  getPathByLevelUp: getPathByLevelUp,
-  handleTextArr: handleTextArr,
+  getPathByLevelUp:
+  getPathByLevelUp,
+  handleTextArr:
+  handleTextArr,
 
   // *****************************
 

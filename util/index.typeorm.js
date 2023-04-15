@@ -2,11 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const {
-  getPathByLevelUp,
-  handleTextArr,
-  readPackageJson,
-} = require('./index.common');
 const stringList = {
   // 'server'
   string_server: 'server',
@@ -24,6 +19,63 @@ const stringList = {
   // 'datasource.js'
   filename_datasource: 'datasource.js',
 };
+
+/**
+ * create an array, save text
+ * @param pathTarget
+ * @param callbacks
+ * @returns {*}
+ */
+function handleTextArr(pathTarget, ...callbacks) {
+  const textArr = [];
+
+  const filenameList = fs.readdirSync(pathTarget);
+  callbacks.forEach((callback) => {
+    filenameList.forEach((filename) => {
+      const text = callback(filename);
+      if (Array.isArray(text)) {
+        Array.from(text).forEach((value) => {
+          textArr.push(value);
+        });
+      } else {
+        textArr.push(text);
+      }
+    });
+  });
+
+  const reduce = textArr.reduce((str, value) => {
+    return str.concat(value);
+  }, '');
+  return reduce;
+}
+
+/**
+ * find dir/ level up
+ *
+ * eg: xxx-project/server/router/
+ *
+ * return xxx-project/server/
+ *
+ * @param pathTarget
+ * @param filename
+ * @returns
+ */
+function getPathByLevelUp(
+  pathTarget = null,
+  filename = null) {
+
+  if (pathTarget === null) {
+    return;
+  }
+
+  const basename = path.basename(pathTarget);
+  const pathLevelUp = pathTarget.replace(basename, '');
+  if (filename === null) {
+    return pathLevelUp;
+  } else {
+    return path.join(pathLevelUp, filename);
+  }
+}
 
 /**
  * default: xxx-project/server/db/entity/

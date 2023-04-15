@@ -1,11 +1,11 @@
 const fs = require('fs');
 
 const {table} = require('../db/util.typeorm');
-const {comVideoGet, comVideoUpdateExists, comNoticeMp4Check
-}
-  = require('./_common.dao');
+const {comVideoGet, comVideoUpdateExists, comNoticeMp4Check,
+  comVideoUpdateSearchingFalse
+} = require('./_common.dao');
 
-const {notice_deskapp_show_the_video, notice_browser_firefox_notice,
+const {notice_deskapp_show_the_video,
 } = require('./notice.dao');
 const {configGetFilepathSavelocation} = require('./config.dao');
 const {queueUpdateAllTask} = require('./queue.dao');
@@ -28,7 +28,9 @@ async function videoDeleteDownloadedMP4(message) {
   let {vid} = message;
   try {
     let {filepath} = await comVideoGet({vid});
-    fs.rmSync(filepath, {force: true, recursive: true});
+    if (fs.existsSync(filepath)) {
+      fs.rmSync(filepath, {force: true, recursive: true});
+    }
     await comVideoUpdateExists({vid})
 
     return true;
@@ -173,6 +175,9 @@ async function videoRedownload(message, passdata) {
 
   // todo delete old mp4 file
   await videoDelete({vid, type: 2}, passdata);
+  // todo update searching to false
+ await comVideoUpdateSearchingFalse({vid})
+
   // todo notice browser search video data
   await comNoticeMp4Check({
     vid, playlist: null,
@@ -190,7 +195,9 @@ module.exports = {
     await table.videoUpdate(video, {vid});
   },
 
-  videoRedownload: videoRedownload,
+  videoRedownload:
+  videoRedownload,
+
   videoCheckBoolean: videoCheckBoolean,
 
   videoGetAll: async () => {

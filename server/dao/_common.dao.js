@@ -75,12 +75,17 @@ async function comVideoUpdateSearchingTrue(message) {
 async function comNoticeMp4Check(message, passdata) {
 
   let {check, videos} = await comVideoCheckAllSearching();
+  let {vid} = message;
   console.log(`meslog check=`, check, 'vid=', message.vid);
 
   if (check) { // no seaching, you can seaching video
-    let {vid} = message;
     await comVideoUpdateSearchingTrue({vid});
     await notice_browser_mp4(message, passdata);
+  }else {
+    videos.forEach((value)=>{
+      let {vid} = value
+      console.log(`comNoticeMp4Check check=true vid=${vid}`)
+    })
   }
 
 }
@@ -91,7 +96,9 @@ module.exports = {
   comNoticeMp4Check,
 
   comVideoCheckAllSearching: comVideoCheckAllSearching,
-  comVideoUpdateSearchingFalse: comVideoUpdateSearchingFalse,
+  comVideoUpdateSearchingFalse:
+  comVideoUpdateSearchingFalse,
+
   comVideoUpdateSearchingTrue: comVideoUpdateSearchingTrue,
 
   /**

@@ -6,9 +6,9 @@ const wrapper = function(passdata) {
   const express = require('express');
   const noticeRouter = express.Router();
 
-  noticeRouter.post('/mp4',  (req, res) => {
+  noticeRouter.post('/mp4',  async (req, res) => {
+    await comNoticeMp4Check(req.body, passdata);
     res.status(200).send();
-     comNoticeMp4Check(req.body, passdata);
   });
   noticeRouter.post('/playlist/',  (req, res) => {
     res.status(200).send();

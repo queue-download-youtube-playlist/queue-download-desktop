@@ -11,7 +11,7 @@ function getEntitySchemaList() {
   const queueObj = require('./entity/queue.entity.js');
   const queueEntitySchema = new EntitySchema(Object.create(queueObj));
   entities.push(queueEntitySchema);
-
+  
   const taskObj = require('./entity/task.entity.js');
   const taskEntitySchema = new EntitySchema(Object.create(taskObj));
   entities.push(taskEntitySchema);
