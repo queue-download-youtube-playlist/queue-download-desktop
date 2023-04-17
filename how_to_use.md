@@ -1,6 +1,6 @@
 # download
  - [windows app release](https://github.com/queue-download-youtube-playlist/queue-download-desktop/releases/latest)
- - [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/youtube-playlist-download/)
+ - [firefox addon](https://addons.mozilla.org/en-US/firefox/addon/youtube-playlist-download-win/)
 
 # connect firefox addons to windows app
 ![connect windows app](/image/connect_windows_app.png)

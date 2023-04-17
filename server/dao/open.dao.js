@@ -8,7 +8,7 @@ const {comVideoGet, comVideoUpdateExists}
   = require('./_common.dao');
 
 let urlExtension =
-  `"https://addons.mozilla.org/en-us/firefox/addon/youtube-playlist-download/"`;
+  `"https://addons.mozilla.org/en-US/firefox/addon/youtube-playlist-download-win/"`;
 let urlLocalhostIndex =
   `http://localhost:16206/`;
 
