@@ -1,10 +1,10 @@
 'use strict';
-
+      
 const {dataSource} = require('./datasource.js');
 const {Like} = require('typeorm');
 
 const table = {
-
+  
   // config.entity.js
   // **************************************************************************
   /**
@@ -15,8 +15,8 @@ const table = {
     return await dataSource.getRepository('config');
   },
   /**
-   * save config
-   * @param entityObj
+   * Insert config
+   * @param entityObj {Object:{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
    * @returns {Promise<void>}
    */
   configInsert: async (entityObj) => {
@@ -24,7 +24,7 @@ const table = {
   },
   /**
    * {id: 1}
-   * @param options
+   * @param options {Object:{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
    * @returns {Promise<*>}
    */
   configDelete: async (options) => {
@@ -32,18 +32,18 @@ const table = {
   },
   /**
    * configNew, {id: 1}
-   * @param configNew
-   * @param options
-   * @returns {Promise<{"id":"number","savelocation":"string","tmplocation":"string","appdatacache":"string"}>}
+   * @param configNew {Object:{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
+   * @param options {Object:{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
+   * @returns {Promise<{id?: number, savelocation: string, tmplocation: string, appdatacache: string, }>}
    */
   configUpdate: async (configNew, options) => {
     await dataSource.getRepository('config').update(options, configNew);
     return await dataSource.getRepository('config').findOneBy(options);
   },
   /**
-   * {} --> updateall
-   *
-   * @param configNew
+   * {xxxxx: false}
+   * 
+   * @param configNew {Object:{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
    * @returns {Promise<void>}
    */
   configUpdateAll: async (configNew) => {
@@ -51,46 +51,46 @@ const table = {
   },
   /**
    * {id: 1}
-   * @param options
-   * @returns {Promise<null|{"id":"number","savelocation":"string","tmplocation":"string","appdatacache":"string"}>}
+   * @param options {Object:{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
+   * @returns {Promise<null|{id?: number, savelocation: string, tmplocation: string, appdatacache: string, }>}
    */
   configFindOneWhere: async (options) => {
     let ret = await dataSource.getRepository('config').findOneBy(options);
     return ret ? ret : null;
   },
   /**
-   * {select: {name: 'mari'}, where: {id: 1}}
-   * @param options
-   * @returns {Promise<null|{"id":"number","savelocation":"string","tmplocation":"string","appdatacache":"string"}>}
+   * {select: {name: 'mary'}, where: {id: 1}}
+   * @param options {select: {savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }, where: {savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
+   * @returns {Promise<null|{id?: number, savelocation: string, tmplocation: string, appdatacache: string, }>}
    */
   configFindOne: async (options) => {
     let ret = await dataSource.getRepository('config').findOne(options);
     return ret ? ret : null;
   },
   /**
-   * null or {select: {name: 'mari'}, where: {id: 1}}
-   * @param options
-   * @returns {Promise<[{"id":"number","savelocation":"string","tmplocation":"string","appdatacache":"string"}]>}
+   * null or {select: {name: 'mary'}, where: {id: 1}}
+   * @param options {null|{select: {savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }, where: {savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}}
+   * @returns {Promise<[{id?: number, savelocation: string, tmplocation: string, appdatacache: string, }]>}
    */
-  configFind: async (options) => {
+  configFind: async (options = null) => {
     if (options === null) {
       return await dataSource.getRepository('config').find();
-    } else {
+    }else {
       return await dataSource.getRepository('config').find(options);
     }
   },
   /**
    * {id: 1}
-   * @param options
-   * @returns {Promise<[{"id":"number","savelocation":"string","tmplocation":"string","appdatacache":"string"}]>}
+   * @param options {Object:{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
+   * @returns {Promise<[{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }]>}
    */
   configFindWhere: async (options) => {
     return await dataSource.getRepository('config').findBy(options);
   },
   /**
-   * {name: 'mari'} to {name: Like('%mari%')}
-   * @param options
-   * @returns {Promise<[{"id":"number","savelocation":"string","tmplocation":"string","appdatacache":"string"}]>}
+   * {name: 'mary'} to {name: Like('%mari%')}
+   * @param options {Object:{savelocation?: string, tmplocation?: string, appdatacache?: string, id?: number, }}
+   * @returns {Promise<[{id?: number, savelocation: string, tmplocation: string, appdatacache: string, }]>}
    */
   configFindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -98,6 +98,7 @@ const table = {
     options[searchKey] = Like(`%${searchVal}%`);
     return await dataSource.getRepository('config').findBy(options);
   },
+  
 
   // queue.entity.js
   // **************************************************************************
@@ -109,8 +110,8 @@ const table = {
     return await dataSource.getRepository('queue');
   },
   /**
-   * save queue
-   * @param entityObj
+   * Insert queue
+   * @param entityObj {Object:{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
    * @returns {Promise<void>}
    */
   queueInsert: async (entityObj) => {
@@ -118,7 +119,7 @@ const table = {
   },
   /**
    * {id: 1}
-   * @param options
+   * @param options {Object:{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
    * @returns {Promise<*>}
    */
   queueDelete: async (options) => {
@@ -126,18 +127,18 @@ const table = {
   },
   /**
    * queueNew, {id: 1}
-   * @param queueNew
-   * @param options
-   * @returns {Promise<{"total":"number","playlist":"string","title":"string","targetlink":"string","type":"number","isfinish":"number","progress":"number"}>}
+   * @param queueNew {Object:{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
+   * @param options {Object:{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
+   * @returns {Promise<{playlist?: string, total: number, title: string, targetlink: string, type: number, isfinish: number, progress: number, }>}
    */
   queueUpdate: async (queueNew, options) => {
     await dataSource.getRepository('queue').update(options, queueNew);
     return await dataSource.getRepository('queue').findOneBy(options);
   },
   /**
-   * {} --> updateall
-   *
-   * @param queueNew
+   * {xxxxx: false}
+   * 
+   * @param queueNew {Object:{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
    * @returns {Promise<void>}
    */
   queueUpdateAll: async (queueNew) => {
@@ -145,46 +146,46 @@ const table = {
   },
   /**
    * {id: 1}
-   * @param options
-   * @returns {Promise<null|{"total":"number","playlist":"string","title":"string","targetlink":"string","type":"number","isfinish":"number","progress":"number"}>}
+   * @param options {Object:{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
+   * @returns {Promise<null|{playlist?: string, total: number, title: string, targetlink: string, type: number, isfinish: number, progress: number, }>}
    */
   queueFindOneWhere: async (options) => {
     let ret = await dataSource.getRepository('queue').findOneBy(options);
     return ret ? ret : null;
   },
   /**
-   * {select: {name: 'mari'}, where: {id: 1}}
-   * @param options
-   * @returns {Promise<null|{"total":"number","playlist":"string","title":"string","targetlink":"string","type":"number","isfinish":"number","progress":"number"}>}
+   * {select: {name: 'mary'}, where: {id: 1}}
+   * @param options {select: {total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }, where: {total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
+   * @returns {Promise<null|{playlist?: string, total: number, title: string, targetlink: string, type: number, isfinish: number, progress: number, }>}
    */
   queueFindOne: async (options) => {
     let ret = await dataSource.getRepository('queue').findOne(options);
     return ret ? ret : null;
   },
   /**
-   * null or {select: {name: 'mari'}, where: {id: 1}}
-   * @param options
-   * @returns {Promise<[{"total":"number","playlist":"string","title":"string","targetlink":"string","type":"number","isfinish":"number","progress":"number"}]>}
+   * null or {select: {name: 'mary'}, where: {id: 1}}
+   * @param options {null|{select: {total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }, where: {total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}}
+   * @returns {Promise<[{playlist?: string, total: number, title: string, targetlink: string, type: number, isfinish: number, progress: number, }]>}
    */
-  queueFind: async (options) => {
+  queueFind: async (options = null) => {
     if (options === null) {
       return await dataSource.getRepository('queue').find();
-    } else {
+    }else {
       return await dataSource.getRepository('queue').find(options);
     }
   },
   /**
    * {id: 1}
-   * @param options
-   * @returns {Promise<[{"total":"number","playlist":"string","title":"string","targetlink":"string","type":"number","isfinish":"number","progress":"number"}]>}
+   * @param options {Object:{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
+   * @returns {Promise<[{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }]>}
    */
   queueFindWhere: async (options) => {
     return await dataSource.getRepository('queue').findBy(options);
   },
   /**
-   * {name: 'mari'} to {name: Like('%mari%')}
-   * @param options
-   * @returns {Promise<[{"total":"number","playlist":"string","title":"string","targetlink":"string","type":"number","isfinish":"number","progress":"number"}]>}
+   * {name: 'mary'} to {name: Like('%mari%')}
+   * @param options {Object:{total?: number, title?: string, targetlink?: string, type?: number, isfinish?: number, progress?: number, playlist?: string, }}
+   * @returns {Promise<[{playlist?: string, total: number, title: string, targetlink: string, type: number, isfinish: number, progress: number, }]>}
    */
   queueFindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -192,6 +193,7 @@ const table = {
     options[searchKey] = Like(`%${searchVal}%`);
     return await dataSource.getRepository('queue').findBy(options);
   },
+  
 
   // task.entity.js
   // **************************************************************************
@@ -203,8 +205,8 @@ const table = {
     return await dataSource.getRepository('task');
   },
   /**
-   * save task
-   * @param entityObj
+   * Insert task
+   * @param entityObj {Object:{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
    * @returns {Promise<void>}
    */
   taskInsert: async (entityObj) => {
@@ -212,7 +214,7 @@ const table = {
   },
   /**
    * {id: 1}
-   * @param options
+   * @param options {Object:{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
    * @returns {Promise<*>}
    */
   taskDelete: async (options) => {
@@ -220,18 +222,18 @@ const table = {
   },
   /**
    * taskNew, {id: 1}
-   * @param taskNew
-   * @param options
-   * @returns {Promise<{"tid":"string","vid":"string","index":"string","playlist":"string","finished":"number"}>}
+   * @param taskNew {Object:{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
+   * @param options {Object:{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
+   * @returns {Promise<{tid?: string, vid: string, index: string, playlist: string, finished: boolean, }>}
    */
   taskUpdate: async (taskNew, options) => {
     await dataSource.getRepository('task').update(options, taskNew);
     return await dataSource.getRepository('task').findOneBy(options);
   },
   /**
-   * {} --> updateall
-   *
-   * @param taskNew
+   * {xxxxx: false}
+   * 
+   * @param taskNew {Object:{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
    * @returns {Promise<void>}
    */
   taskUpdateAll: async (taskNew) => {
@@ -239,46 +241,46 @@ const table = {
   },
   /**
    * {id: 1}
-   * @param options
-   * @returns {Promise<null|{"tid":"string","vid":"string","index":"string","playlist":"string","finished":"number"}>}
+   * @param options {Object:{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
+   * @returns {Promise<null|{tid?: string, vid: string, index: string, playlist: string, finished: boolean, }>}
    */
   taskFindOneWhere: async (options) => {
     let ret = await dataSource.getRepository('task').findOneBy(options);
     return ret ? ret : null;
   },
   /**
-   * {select: {name: 'mari'}, where: {id: 1}}
-   * @param options
-   * @returns {Promise<null|{"tid":"string","vid":"string","index":"string","playlist":"string","finished":"number"}>}
+   * {select: {name: 'mary'}, where: {id: 1}}
+   * @param options {select: {vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }, where: {vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
+   * @returns {Promise<null|{tid?: string, vid: string, index: string, playlist: string, finished: boolean, }>}
    */
   taskFindOne: async (options) => {
     let ret = await dataSource.getRepository('task').findOne(options);
     return ret ? ret : null;
   },
   /**
-   * null or {select: {name: 'mari'}, where: {id: 1}}
-   * @param options
-   * @returns {Promise<[{"tid":"string","vid":"string","index":"string","playlist":"string","finished":"number"}]>}
+   * null or {select: {name: 'mary'}, where: {id: 1}}
+   * @param options {null|{select: {vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }, where: {vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}}
+   * @returns {Promise<[{tid?: string, vid: string, index: string, playlist: string, finished: boolean, }]>}
    */
-  taskFind: async (options) => {
+  taskFind: async (options = null) => {
     if (options === null) {
       return await dataSource.getRepository('task').find();
-    } else {
+    }else {
       return await dataSource.getRepository('task').find(options);
     }
   },
   /**
    * {id: 1}
-   * @param options
-   * @returns {Promise<[{"tid":"string","vid":"string","index":"string","playlist":"string","finished":"number"}]>}
+   * @param options {Object:{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
+   * @returns {Promise<[{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }]>}
    */
   taskFindWhere: async (options) => {
     return await dataSource.getRepository('task').findBy(options);
   },
   /**
-   * {name: 'mari'} to {name: Like('%mari%')}
-   * @param options
-   * @returns {Promise<[{"tid":"string","vid":"string","index":"string","playlist":"string","finished":"number"}]>}
+   * {name: 'mary'} to {name: Like('%mari%')}
+   * @param options {Object:{vid?: string, index?: string, playlist?: string, finished?: boolean, tid?: string, }}
+   * @returns {Promise<[{tid?: string, vid: string, index: string, playlist: string, finished: boolean, }]>}
    */
   taskFindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -286,6 +288,7 @@ const table = {
     options[searchKey] = Like(`%${searchVal}%`);
     return await dataSource.getRepository('task').findBy(options);
   },
+  
 
   // video.entity.js
   // **************************************************************************
@@ -297,8 +300,8 @@ const table = {
     return await dataSource.getRepository('video');
   },
   /**
-   * save video
-   * @param entityObj
+   * Insert video
+   * @param entityObj {Object:{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
    * @returns {Promise<void>}
    */
   videoInsert: async (entityObj) => {
@@ -306,7 +309,7 @@ const table = {
   },
   /**
    * {id: 1}
-   * @param options
+   * @param options {Object:{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
    * @returns {Promise<*>}
    */
   videoDelete: async (options) => {
@@ -314,18 +317,18 @@ const table = {
   },
   /**
    * videoNew, {id: 1}
-   * @param videoNew
-   * @param options
-   * @returns {Promise<{"vid":"string","filename":"string","filepath":"string","exists":"boolean","searching":"boolean","downloading":"boolean","vlink":"string","playlist":"string","quality":"string","size":"string","author":"string","title":"string","description":"string","downlink":"string"}>}
+   * @param videoNew {Object:{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
+   * @param options {Object:{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
+   * @returns {Promise<{vid?: string, filename: string, filepath: string, exists: boolean, searching: boolean, downloading: boolean, vlink: string, playlist: string, quality: string, size: string, author: string, title: string, description: string, downlink: string, }>}
    */
   videoUpdate: async (videoNew, options) => {
     await dataSource.getRepository('video').update(options, videoNew);
     return await dataSource.getRepository('video').findOneBy(options);
   },
   /**
-   * {} --> updateall
-   *
-   * @param videoNew
+   * {xxxxx: false}
+   * 
+   * @param videoNew {Object:{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
    * @returns {Promise<void>}
    */
   videoUpdateAll: async (videoNew) => {
@@ -333,46 +336,46 @@ const table = {
   },
   /**
    * {id: 1}
-   * @param options
-   * @returns {Promise<null|{"vid":"string","filename":"string","filepath":"string","exists":"boolean","searching":"boolean","downloading":"boolean","vlink":"string","playlist":"string","quality":"string","size":"string","author":"string","title":"string","description":"string","downlink":"string"}>}
+   * @param options {Object:{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
+   * @returns {Promise<null|{vid?: string, filename: string, filepath: string, exists: boolean, searching: boolean, downloading: boolean, vlink: string, playlist: string, quality: string, size: string, author: string, title: string, description: string, downlink: string, }>}
    */
   videoFindOneWhere: async (options) => {
     let ret = await dataSource.getRepository('video').findOneBy(options);
     return ret ? ret : null;
   },
   /**
-   * {select: {name: 'mari'}, where: {id: 1}}
-   * @param options
-   * @returns {Promise<null|{"vid":"string","filename":"string","filepath":"string","exists":"boolean","searching":"boolean","downloading":"boolean","vlink":"string","playlist":"string","quality":"string","size":"string","author":"string","title":"string","description":"string","downlink":"string"}>}
+   * {select: {name: 'mary'}, where: {id: 1}}
+   * @param options {select: {filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }, where: {filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
+   * @returns {Promise<null|{vid?: string, filename: string, filepath: string, exists: boolean, searching: boolean, downloading: boolean, vlink: string, playlist: string, quality: string, size: string, author: string, title: string, description: string, downlink: string, }>}
    */
   videoFindOne: async (options) => {
     let ret = await dataSource.getRepository('video').findOne(options);
     return ret ? ret : null;
   },
   /**
-   * null or {select: {name: 'mari'}, where: {id: 1}}
-   * @param options
-   * @returns {Promise<[{"vid":"string","filename":"string","filepath":"string","exists":"boolean","searching":"boolean","downloading":"boolean","vlink":"string","playlist":"string","quality":"string","size":"string","author":"string","title":"string","description":"string","downlink":"string"}]>}
+   * null or {select: {name: 'mary'}, where: {id: 1}}
+   * @param options {null|{select: {filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }, where: {filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}}
+   * @returns {Promise<[{vid?: string, filename: string, filepath: string, exists: boolean, searching: boolean, downloading: boolean, vlink: string, playlist: string, quality: string, size: string, author: string, title: string, description: string, downlink: string, }]>}
    */
-  videoFind: async (options) => {
+  videoFind: async (options = null) => {
     if (options === null) {
       return await dataSource.getRepository('video').find();
-    } else {
+    }else {
       return await dataSource.getRepository('video').find(options);
     }
   },
   /**
    * {id: 1}
-   * @param options
-   * @returns {Promise<[{"vid":"string","filename":"string","filepath":"string","exists":"boolean","searching":"boolean","downloading":"boolean","vlink":"string","playlist":"string","quality":"string","size":"string","author":"string","title":"string","description":"string","downlink":"string"}]>}
+   * @param options {Object:{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
+   * @returns {Promise<[{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }]>}
    */
   videoFindWhere: async (options) => {
     return await dataSource.getRepository('video').findBy(options);
   },
   /**
-   * {name: 'mari'} to {name: Like('%mari%')}
-   * @param options
-   * @returns {Promise<[{"vid":"string","filename":"string","filepath":"string","exists":"boolean","searching":"boolean","downloading":"boolean","vlink":"string","playlist":"string","quality":"string","size":"string","author":"string","title":"string","description":"string","downlink":"string"}]>}
+   * {name: 'mary'} to {name: Like('%mari%')}
+   * @param options {Object:{filename?: string, filepath?: string, exists?: boolean, searching?: boolean, downloading?: boolean, vlink?: string, playlist?: string, quality?: string, size?: string, author?: string, title?: string, description?: string, downlink?: string, vid?: string, }}
+   * @returns {Promise<[{vid?: string, filename: string, filepath: string, exists: boolean, searching: boolean, downloading: boolean, vlink: string, playlist: string, quality: string, size: string, author: string, title: string, description: string, downlink: string, }]>}
    */
   videoFindWhereLike: async (options) => {
     const searchKey = Object.keys(options)[0];
@@ -380,9 +383,10 @@ const table = {
     options[searchKey] = Like(`%${searchVal}%`);
     return await dataSource.getRepository('video').findBy(options);
   },
+  
 
-};
+}
 
 module.exports = {
-  table: table,
-};
+  table: table
+}

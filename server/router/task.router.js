@@ -7,17 +7,16 @@ const wrapper = function(passdata) {
   /**
    * create a lot of task by playlist
    */
-  taskRouter.post('/',  (req, res) => {
+  taskRouter.post('/', async (req, res) => {
     res.status(200).send();
-     taskPost(req.body, passdata).then(()=>{
-       queueUpdateTotal(req.body, passdata);
-     });
+    await taskPost(req.body, passdata);
+    await queueUpdateTotal(req.body, passdata);
   });
 
-  taskRouter.get('/all',  (req, res) => {
-      taskFindAll(req.params, passdata).then((value)=>{
-        res.status(200).send(value)
-      })
+  taskRouter.get('/all', (req, res) => {
+    taskFindAll(req.params, passdata).then((value) => {
+      res.status(200).send(value);
+    });
   });
 
   return taskRouter;

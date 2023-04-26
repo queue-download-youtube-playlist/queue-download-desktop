@@ -4,7 +4,7 @@ const {
 } = require(
   './util/index.electron.vue');
 
-// npmRunMakeOpenOutZip();
-npmRunPublishAndCopyFileToDesktop();
+npmRunMakeOpenOutZip();
+// npmRunPublishAndCopyFileToDesktop();
 
 // openElectronZip()

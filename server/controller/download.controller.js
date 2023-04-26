@@ -2,8 +2,11 @@ require('fs');
 const path = require('path');
 const {exec} = require('node:child_process');
 
-const {notice_browser_firefox_notice,
-  notice_deskapp_downloading, notice_deskapp_queue_update, notice_deskapp_download_complete,
+const {
+  notice_browser_firefox_notice,
+  notice_deskapp_downloading,
+  notice_deskapp_queue_update,
+  notice_deskapp_download_complete,
   notice_deskapp_download_before,
   notice_deskapp_show_the_video,
 } = require('../dao/notice.dao');
@@ -58,7 +61,7 @@ function getAria2EXE() {
  * @param message{Object:{playlist:String, vid:String}}
  * @param passdata
  */
-async function downloadMP4UseCMD(message, passdata) {
+async function downloadingMP4(message, passdata) {
   let {vid} = message;
   let video = await comVideoGet({vid});
   let {filename, downlink} = video;
@@ -69,13 +72,11 @@ async function downloadMP4UseCMD(message, passdata) {
     `"${aria2c}"`,
     `--file-allocation=none`,
     `--download-result=hide`,
-    `--max-connection-per-server=16`,
+    // `--max-connection-per-server=16`,
     `--split=200`,
     `--out="${filename}"`,
     `--dir="${savelocation}"`,
     downlink,
-
-    // `&& exit`,
   ];
   let command = arr.reduce((str, val) =>
     str.concat(' ', val), ``).trim();
@@ -84,11 +85,11 @@ async function downloadMP4UseCMD(message, passdata) {
   // console.log('command=', command);
   const coffeeProcess = exec(command);
   // todo download before show the video, scroll find it
-  notice_deskapp_download_before({vid, video}, passdata)
+  notice_deskapp_download_before({vid, video}, passdata);
   // notice_deskapp_show_the_video({vid, video}, passdata);
 
   coffeeProcess.stdout.on('data', (data) => {
-    notice_deskapp_downloading({data, video, vid}, passdata)
+    notice_deskapp_downloading({data, video, vid}, passdata);
   });
   coffeeProcess.stderr.on('data', (data) => {
     console.log(data);
@@ -97,20 +98,16 @@ async function downloadMP4UseCMD(message, passdata) {
     await comVideoUpdateDownloading({vid});
     let {exists} = await comVideoUpdateExists({vid});
     if (exists) {
-      // await downloadMP4OK(message, passdata);
-      //let video = await comVideoGet({vid});
-      //notice_deskapp_show_the_video({video, vid}, passdata);
-      // todo notice download ok
       await notice_browser_firefox_notice({
         title: 'download ok',
         text: `${filename}`,
       }, passdata);
       // todo notice deskapp download complete
-      notice_deskapp_download_complete({vid}, passdata)
+      notice_deskapp_download_complete({vid}, passdata);
       console.log('download ok');
       // 4 download next video
       await downloadNextVideo(message, passdata);
-    }else {
+    } else {
       // todo notice browser download mp4 again
       await comNoticeMp4Check(message, passdata);
       // todo notice download failed
@@ -157,7 +154,7 @@ async function downloadGoGetMP4(message, passdata) {
       // todo update db
       await comVideoUpdateDownloading({vid});
       // todo download use cmd
-      await downloadMP4UseCMD(message, passdata);
+      await downloadingMP4(message, passdata);
 
       // todo notice downloading
       await notice_browser_firefox_notice({
@@ -166,8 +163,7 @@ async function downloadGoGetMP4(message, passdata) {
       }, passdata);
     }
 
-  }
-  else {
+  } else {
     // await notice_browser_firefox_notice({
     //   title: `video is downloading`,
     //   text: `please wait a few times`,
@@ -180,7 +176,7 @@ async function downloadGoGetMP4(message, passdata) {
       //   text: `${title}`,
       // }, passdata);
     }
-    console.log('downloading videos=\n', videos.length)
+    console.log('downloading videos=\n', videos.length);
   }
 
 }

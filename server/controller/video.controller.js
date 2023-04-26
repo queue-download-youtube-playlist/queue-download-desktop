@@ -11,19 +11,17 @@ const {
   '../dao/_common.dao');
 module.exports = {
   videoPutController: async (message, passdata) => {
+    console.log(`meslog message=\n`, message);
+
     let {vid, playlist} = message;
     await videoPutDao(message);
 
     // todo update searching and gotodownload video mp4
-    let {downlink} = await comVideoGet({vid});
-    if (downlink) {
-      await comVideoUpdateSearchingFalse({vid});
-      await downloadGoGetMP4({
-        vid,
-        playlist,
-      }, passdata);
-    } else {
-      console.log(`dont has a downlink,`);
-    }
+    await comVideoUpdateSearchingFalse({vid});
+    await downloadGoGetMP4({
+      vid,
+      playlist,
+    }, passdata);
+
   },
 };

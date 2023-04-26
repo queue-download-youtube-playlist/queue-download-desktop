@@ -223,7 +223,7 @@ function getPathElectronOutZip() {
 }
 
 function openElectronZip() {
-  execSync(`start "" ${getPathElectronOutZip()}`);
+  execSync(`start "" "${getPathElectronOutZip()}"`);
 }
 
 function npmRunMakeOpenOutZip() {
@@ -262,7 +262,8 @@ module.exports = {
 
   execSync: execSync,
   execAsync: execAsync,
-  npmRunMakeOpenOutZip: npmRunMakeOpenOutZip,
+  npmRunMakeOpenOutZip:
+  npmRunMakeOpenOutZip,
 
   openElectronZip: openElectronZip,
 

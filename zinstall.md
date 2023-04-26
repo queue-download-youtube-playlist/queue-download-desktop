@@ -4,7 +4,11 @@ yarn create electron-app send-file-to-pc --template=webpack
 
 
 ```shell
-git add . && git commit -m "1.0.15.9; update firefox addons link" && git push --force
+yarn install
+```
+
+```shell
+git add . && git commit -m "1.0.15.10" && git push --force
 ```
 
 ```shell

@@ -91,6 +91,8 @@ async function videoDelete(
  * @param passdata
  */
 async function videoPost(message, passdata) {
+  console.log(`meslog videoPost message=\n`, message);
+
   let {video} = message;
   let {vid, author, title} = video;
 

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const {table} = require('../db/util.typeorm');
 
-const {comVideoGet, comVideoUpdateDownloading, comVideoUpdateExists}
+const {comVideoGet, comVideoUpdateExists}
   = require('./_common.dao');
 
 async function taskFindAllFinishedTrueLength(message) {
@@ -19,7 +19,7 @@ module.exports = {
         const findOne = await table.taskFindOneWhere(
           {vid, index, playlist});
         let tid = `${vid} ${index}`;
-        let task = {tid, vid, index, playlist};
+        let task = {tid, vid, index, playlist,};
         if (findOne) {
         }else {
           await table.taskInsert(task);
@@ -82,7 +82,7 @@ module.exports = {
   },
   /**
    *
-   * @param message{Object:{playlist:String}}
+   * @param message{Object:{playlist:string}}
    * @return {Promise<{tid: "string", vid: "string", index: "string", playlist: "string", finished: "number"}>}
    */
   taskFindOneFalse: async (message) => {

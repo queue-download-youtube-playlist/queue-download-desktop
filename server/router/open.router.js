@@ -3,9 +3,9 @@ const wrapper = function(passdata) {
   const express = require('express');
   const openRouter = express.Router();
 
-  openRouter.get('/localvideo/:vid',  (req, res) => {
+  openRouter.get('/localvideo/:vid',  async (req, res) => {
+     await openVideo(req.params, passdata);
     res.status(200).send();
-     openVideo(req.params, passdata);
   });
 
   openRouter.get('/browserpage/extension',  (req, res) => {

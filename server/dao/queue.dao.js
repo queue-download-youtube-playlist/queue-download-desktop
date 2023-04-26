@@ -157,7 +157,8 @@ module.exports = {
   queueUpdateProgress:
   queueUpdateProgress,
 
-  queueUpdateTotal: queueUpdateTotal,
+  queueUpdateTotal:
+  queueUpdateTotal,
 
   queueGetAll: queueGetAll,
   queueCheck: queueCheck,

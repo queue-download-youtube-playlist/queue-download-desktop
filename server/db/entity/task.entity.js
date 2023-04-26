@@ -16,7 +16,7 @@ module.exports = {
       type: 'varchar', default: '',
     },
     finished: {
-      type: 'int', default: 0,
+      type: 'boolean',  default: false,
     },
 
   },

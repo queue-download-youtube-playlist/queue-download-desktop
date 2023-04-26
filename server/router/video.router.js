@@ -22,9 +22,9 @@ const wrapper = function(passdata) {
   /**
    * post video
    */
-  videoRouter.post('/', (req, res) => {
+  videoRouter.post('/', async (req, res) => {
     res.status(200).send();
-    videoPost(req.body, passdata);
+    await videoPost(req.body, passdata);
   });
   /**
    * delete video
@@ -37,9 +37,9 @@ const wrapper = function(passdata) {
   /**
    * update video
    */
-  videoRouter.put('/', (req, res) => {
+  videoRouter.put('/', async (req, res) => {
     res.status(200).send();
-    videoPutController(req.body, passdata);
+    await videoPutController(req.body, passdata);
   });
 
   /**
