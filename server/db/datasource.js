@@ -2,17 +2,13 @@
       
 const {DataSource} = require('typeorm');
 const {
-  getEntitySchemaList,
-  getDatabasePath,
+  getEntitySchemaList, 
+  getPathDatabase,
 } = require('./util.datasource.js');
 
-// const path = require('path');
-// let databasePath = path.join('a', 'b', 'c', 'db.sqlite')
-// database: databasePath, // create db.sqlite in databasePath
-// database: 'db.sqlite', // create db.sqlite in rootDir
 const dataSource = new DataSource({
   type: 'better-sqlite3',
-  database: getDatabasePath(),
+  database: getPathDatabase(),
   synchronize: true,
   logging: false,
   entities: getEntitySchemaList(),

@@ -1,5 +1,5 @@
 'use strict';
-      
+
 function getEntitySchemaList() {
   const {EntitySchema} = require('typeorm');
   const entities = [];
@@ -24,16 +24,21 @@ function getEntitySchemaList() {
   return entities;
 }
 
-function getDatabasePath() {
+
+function getPathDatabase() {
   const path = require('path');
-  const homedir = require('os').homedir();
-  let dbLocaltion = path.join(homedir,
-    'AppData', 'Roaming', 'youtube_playlist_download_queue',
-    'dbsqlite3', 'db.sqlite');
-  return dbLocaltion;
+  let appDataPath = 
+    process.env.APPDATA 
+    || 
+    (process.platform === 'darwin' 
+      ? process.env.HOME + '/Library/Preferences' 
+      : process.env.HOME + "/.local/share");
+  
+  return path.join(appDataPath, "queue-download-desktop", "db.sqlite");
 }
+
 
 module.exports = {
   getEntitySchemaList: getEntitySchemaList,
-  getDatabasePath: getDatabasePath,
+  getPathDatabase: getPathDatabase,
 };

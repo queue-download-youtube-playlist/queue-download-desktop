@@ -8,7 +8,7 @@ const {
   notice_deskapp_queue_update,
   notice_deskapp_download_complete,
   notice_deskapp_download_before,
-  notice_deskapp_show_the_video,
+  notice_deskapp_show_the_video, notice_browser_mp4, notice_browser_gogetjpg,
 } = require('../dao/notice.dao');
 const {queueDownloadOne, queueUpdateProgress} = require('../dao/queue.dao');
 const {taskFindAllFinishedTrue, taskUpdate} = require('../dao/task.dao');
@@ -87,6 +87,7 @@ async function downloadingMP4(message, passdata) {
   // todo download before show the video, scroll find it
   notice_deskapp_download_before({vid, video}, passdata);
   // notice_deskapp_show_the_video({vid, video}, passdata);
+  notice_browser_gogetjpg({vid, filename}, passdata)
 
   coffeeProcess.stdout.on('data', (data) => {
     notice_deskapp_downloading({data, video, vid}, passdata);
@@ -104,6 +105,7 @@ async function downloadingMP4(message, passdata) {
       }, passdata);
       // todo notice deskapp download complete
       notice_deskapp_download_complete({vid}, passdata);
+
       console.log('download ok');
       // 4 download next video
       await downloadNextVideo(message, passdata);

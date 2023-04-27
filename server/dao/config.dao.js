@@ -4,8 +4,9 @@ const {table} = require('../db/util.typeorm');
 const homedir = require('os').homedir();
 
 async function getConfig() {
-  const optionsId1 = {id: 1};
-  let object = await table.configFindOneWhere(optionsId1);
+  let object = await table.configFindOne({
+    where: {id:1}
+  });
   return object;
 }
 
@@ -43,8 +44,9 @@ function checkDir(savelocation, appdatacache, tmplocation) {
 }
 
 async function configInit() {
-  let options = {id: 1};
-  let findOneBy = await table.configFindOneWhere(options);
+  let findOneBy = await table.configFindOne({
+    where: {id: 1}
+  });
 
   if (findOneBy) {
     let {

@@ -31,7 +31,9 @@ async function queuePost(message, passdata) {
   let where = {};
   let columnName = 'playlist';
   where[columnName] = playlist;
-  let findOne = await table.queueFindOneWhere({playlist});
+  let findOne = await table.queueFindOne({
+    where: playlist,
+  });
   if (findOne === null) {
     await table.queueInsert(queue);
     // notice_browser_firefox_notice({
@@ -41,7 +43,8 @@ async function queuePost(message, passdata) {
     notice_deskapp_queue_add({queue}, passdata);
     // todo notice firefox go get playlist all video id
     notice_browser_playlist({playlist}, passdata);
-  } else {
+  }
+  else {
     // notice_browser_firefox_notice({
     //   title: 'exists playlist',
     //   text: `${title}`,
@@ -52,13 +55,15 @@ async function queuePost(message, passdata) {
 
 async function queueDelete(message) {
   let {playlist} = message;
-  let findKey = {playlist};
-  let findOne = await table.queueFindOneWhere(findKey);
+  let findOne = await table.queueFindOne({
+    where: playlist,
+  });
   if (findOne === null) {
 
-  } else {
-    await table.queueDelete(findKey);
-    await taskDelete(findKey);
+  }
+  else {
+    await table.queueDelete({playlist});
+    await taskDelete({playlist});
   }
 }
 
@@ -106,14 +111,15 @@ async function queueGetAll() {
  * @param passdata
  */
 async function queueDownloadOne(message, passdata) {
-  console.log(`queue download one`)
+  console.log(`queue download one`);
   let {playlist} = message;
   let findOne = await taskFindOneFalse({playlist});
   if (findOne) {
     let {vid} = findOne;
     await comNoticeMp4Check({vid, playlist}, passdata);
 
-  } else {
+  }
+  else {
     // console.log(`queueDownloadOne playlist progress 100% !!!`);
     // console.log(options);
     await notice_browser_firefox_notice({
@@ -134,7 +140,9 @@ async function queueCheck(message) {
   console.log('queue check');
 
   let {playlist} = message;
-  let findOneWhere = await table.queueFindOneWhere({playlist});
+  let findOneWhere = await table.queueFindOne({
+    where: {playlist}
+  });
   return !!findOneWhere;
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "queue-download-desktop",
   "productName": "youtube_playlist_download_queue",
-  "version": "1.0.15.10",
+  "version": "1.0.15.11",
   "description": "youtube playlist download one by one, youtube video download, youtube thumbnail download ",
   "main": ".webpack/main",
   "repository": {
@@ -9,7 +9,7 @@
     "url": "git+https://github.com/queue-download-youtube-playlist/queue-download-desktop.git"
   },
   "scripts": {
-    "git_push": "git add . && git commit -m 'update' && git push --force",
+    "git_push": "git add . && git commit -m '1.0.15.11' && git push --force",
     "git_push_force": "git push --force",
     "npm_install": "npm install",
     "yarn_install": "yarn install",

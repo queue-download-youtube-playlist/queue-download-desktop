@@ -16,6 +16,21 @@ function notice_browser_mp4(message, passdata) {
     action: 'notice_browser_gogetmp4',
   }, passdata);
 }
+/**
+ *
+ * @param message {Object :{vid:String, filename:String}}
+ * @param passdata app.js passdata
+ */
+function notice_browser_gogetjpg(message, passdata) {
+  let endsMP4 = `.mp4`;
+  let {vid} = message;
+  _notice_All_Client({
+    vid,
+    filename: message.filename.replace(endsMP4, ''),
+    url: `https://img.youtube.com/vi/${vid}/maxresdefault.jpg`,
+    action: 'notice_browser_gogetjpg',
+  }, passdata);
+}
 
 /**
  *
@@ -272,6 +287,8 @@ module.exports = {
   // notice_browser_image: notice_browser_image,
   notice_browser_mp4:
   notice_browser_mp4,
+  notice_browser_gogetjpg:
+  notice_browser_gogetjpg,
 
   notice_browser_playlist: notice_browser_playlist,
   notice_browser_firefox_notice: notice_browser_firefox_notice,

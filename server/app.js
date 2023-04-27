@@ -56,7 +56,8 @@ webSocketServer.on('connection', (connect) => {
   });
 });
 
-dbInitFnController().then(r => null);
+dbInitFnController().then();
+
 setupRouterList(app, passdata);
 server.listen(port, () => {
   console.clear();

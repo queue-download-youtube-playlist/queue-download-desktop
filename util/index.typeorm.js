@@ -97,7 +97,7 @@ function findPathTarget() {
   return pathTarget;
 }
 
-function convertType(dbtype) {
+function convertSqlTypeToJsType(dbtype) {
   const typeObj = {
     varchar: 'string',
     text: 'string',
@@ -152,7 +152,7 @@ function convertEntityToUpdateString(entityObj) {
   ret.push('{');
   Object.keys(o).forEach((key_) => {
     let val = o[String(key_)];
-    let jstype = convertType(val.type);
+    let jstype = convertSqlTypeToJsType(val.type);
     let arr = [`${key_}?`, ':', ' ', jstype, ',', ' '];
     ret.push(...arr);
   });
@@ -171,12 +171,12 @@ function convertEntityToReturnString(entityObj) {
   let ret = [];
   ret.push('{');
   delete entityObj.columns[find];
-  let arrPk = [`${find}?`, ':', ' ', convertType(value_.type), ',', ' '];
+  let arrPk = [`${find}?`, ':', ' ', convertSqlTypeToJsType(value_.type), ',', ' '];
   ret.push(...arrPk);
 
   Object.keys(o).forEach((key_) => {
     let val = o[String(key_)];
-    let jstype = convertType(val.type);
+    let jstype = convertSqlTypeToJsType(val.type);
     let arr = [key_, ':', ' ', jstype, ',', ' '];
     ret.push(...arr);
   });
@@ -234,11 +234,13 @@ function geneUtilTypeormJs(
    * @param entityObj {[${entityUpdateString}]|${entityUpdateString}}
    * @returns {Promise<InsertResult>}
    */
-  ${entityName}Insert: async (entityObj) => {
-    return ${dbTableString}.insert(entityObj);
+  ${entityName}Insert: async (${entityName}New) => {
+    return ${dbTableString}.insert(${entityName}New);
   },
   /**
    * {id: 1} => delete id=1
+   *
+   * {author: 'mary'} => delete all author='mary'
    * @param options {Object:${entityUpdateString}}
    * @returns {Promise<DeleteResult>}
    */
@@ -246,9 +248,9 @@ function geneUtilTypeormJs(
     return ${dbTableString}.delete(options);
   },
   /**
-   * ${entityName}New, {id: 1} => update id=1
+   * (${entityName}New, {id: 1}) // update ${entityName}New where id=1
    *
-   * ${entityName}New => update all
+   * (${entityName}New) => update all
    * @param ${entityName}New {${entityUpdateString}}
    * @param options {{}|${entityUpdateString}}
    * @returns {Promise<UpdateResult>}
@@ -260,7 +262,7 @@ function geneUtilTypeormJs(
    * {select: {bookName: true}, where: {id: 1}}
    * 
    * [typeorm/docs/find-options.md](https://github.com/typeorm/typeorm/blob/master/docs/find-options.md#find-options)
-   * @param options {{select: ${entitySelectString}, where?: ${entityUpdateString}}}
+   * @param options {{select?: ${entitySelectString}, where?: ${entityUpdateString}}}
    * @returns {Promise<null|${entityReturnString}>}
    */
   ${entityName}FindOne: async (options) => {
@@ -275,7 +277,7 @@ function geneUtilTypeormJs(
    * ${entityName}Find({select: {bookName: true, xxxx: true}, where: {author: Like('%mary%')}})
    * 
    * [typeorm/docs/find-options.md](https://github.com/typeorm/typeorm/blob/master/docs/find-options.md#find-options)
-   * @param options {null|{select: ${entitySelectString}, where?: ${entityUpdateString}}}
+   * @param options {null|{select?: ${entitySelectString}, where?: ${entityUpdateString}}}
    * @returns {Promise<[${entityReturnString}]>}
    */
   ${entityName}Find: async (options = null) => {
@@ -383,12 +385,12 @@ function geneDataSourceJs(
 const {DataSource} = require('typeorm');
 const {
   getEntitySchemaList, 
-  getDatabasePath
+  getPathDatabase,
 } = require('./util.datasource.js');
 
 const dataSource = new DataSource({
   type: 'better-sqlite3',
-  database: getDatabasePath(),
+  database: getPathDatabase(),
   synchronize: true,
   logging: false,
   entities: getEntitySchemaList(),
@@ -471,7 +473,7 @@ function geneUtilDataSourceJs(
   if (typeof databaseName === 'string') {
     textGetDatabasePath = `
 function getPathDatabase() {
-  return ${databaseName}
+  return "${databaseName}"
 }
     `;
   }
@@ -480,6 +482,7 @@ function getPathDatabase() {
 
     textGetDatabasePath = `
 function getPathDatabase() {
+  const path = require('path');
   let appDataPath = 
     process.env.APPDATA 
     || 
@@ -494,7 +497,7 @@ function getPathDatabase() {
 
   const text =
     `'use strict';
-      
+
 function getEntitySchemaList() {
   const {EntitySchema} = require('typeorm');
   const entities = [];
@@ -507,7 +510,7 @@ ${textGetDatabasePath}
 
 module.exports = {
   getEntitySchemaList: getEntitySchemaList,
-  getDatabasePath: getDatabasePath,
+  getPathDatabase: getPathDatabase,
 };
 `;
 

@@ -4,11 +4,11 @@ const {notice_browser_mp4} = require('./notice.dao');
 
 /**
  * canidownload-->true, go to download. false, please wait
- * @return {Promise<{videos: {vid: "string", filename: "string", filepath: "string", exists: "boolean", searching: "boolean", downloading: "boolean", vlink: "string", playlist: "string", quality: "string", size: "string", author: "string", title: "string", description: "string", downlink: "string"}[], check: boolean}>}
+ * @return {Promise<{videos: {vid?: string, filename: string, filepath: string, exists: boolean, searching: boolean, downloading: boolean, vlink: string, playlist: string, quality: string, size: string, author: string, title: string, description: string, downlink: string}[], check: boolean}>}
  */
 async function comVideoCheckAllDownloading() {
   //await
-  let videos = await table.videoFindWhere({downloading: true});
+  let videos = await table.videoFind({where: {downloading: true}});
   let check = videos.length === 0;
   return {
     check,
@@ -22,18 +22,22 @@ async function comVideoCheckAllDownloading() {
  */
 async function comVideoUpdateDownloading(message) {
   let {vid} = message;
-  let {downloading} = await table.videoFindOneWhere({vid});
+  let {downloading} = await table.videoFindOne({
+    where:{vid}
+  });
   let downloadingNew = !downloading;
   await table.videoUpdate({downloading: downloadingNew}, {vid});
 }
 
 /**
  *
- * @return {Promise<{videos: {vid: "string", filename: "string", filepath: "string", exists: "boolean", searching: "boolean", downloading: "boolean", vlink: "string", playlist: "string", quality: "string", size: "string", author: "string", title: "string", description: "string", downlink: "string"}[], check: boolean}>}
+ * @return {Promise<{videos: {vid?: string, filename: string, filepath: string, exists: boolean, searching: boolean, downloading: boolean, vlink: string, playlist: string, quality: string, size: string, author: string, title: string, description: string, downlink: string}[], check: boolean}>}
  */
 async function comVideoCheckAllSearching() {
   //await
-  let videos = await table.videoFindWhere({searching: true});
+  let videos = await table.videoFind({
+    where: {searching: true}
+  });
   let check = videos.length === 0;
   return {
     check: check,
@@ -108,7 +112,9 @@ module.exports = {
    */
   comVideoGet: async (message) => {
     let {vid} = message;
-    return await table.videoFindOneWhere({vid});
+    return await table.videoFindOne({
+      where: {vid}
+    });
   },
 
   comVideoCheckAllDownloading:
@@ -123,7 +129,9 @@ module.exports = {
    */
   comVideoUpdateExists: async (message) => {
     let {vid} = message;
-    let {filename, filepath} = await table.videoFindOneWhere({vid});
+    let {filename, filepath} = await table.videoFindOne({
+      where: {vid}
+    });
 
     let exists = fs.existsSync(filepath);
     await table.videoUpdate({exists}, {vid});

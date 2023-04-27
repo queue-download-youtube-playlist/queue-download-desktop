@@ -6,7 +6,9 @@ const {comVideoGet, comVideoUpdateExists}
 
 async function taskFindAllFinishedTrueLength(message) {
   let {playlist} = message;
-  let tasks = await table.taskFindWhere({playlist, finished: true});
+  let tasks = await table.taskFind({
+    where: {playlist, finished: true},
+  });
   return tasks.length;
 }
 
@@ -16,12 +18,14 @@ module.exports = {
     for (let index in datamap) { // index --> vid
       let vid = datamap[index];
       try {
-        const findOne = await table.taskFindOneWhere(
-          {vid, index, playlist});
+        const findOne = await table.taskFindOne({
+          where: {vid, index, playlist},
+        });
         let tid = `${vid} ${index}`;
-        let task = {tid, vid, index, playlist,};
+        let task = {tid, vid, index, playlist};
         if (findOne) {
-        }else {
+        }
+        else {
           await table.taskInsert(task);
         }
       } catch (e) {
@@ -66,14 +70,17 @@ module.exports = {
    */
   taskFindAllFinishedTrue: async (message) => {
     let {playlist} = message;
-    let tasks = await table.taskFindWhere({playlist, finished: true});
+    let tasks = await table.taskFind({
+      where: {playlist, finished: true},
+    });
     for (const value of tasks) {
       let {vid} = value;
       let video = await comVideoGet({vid});
       if (video) {
         let {exists} = await comVideoUpdateExists({vid});
         await table.taskUpdate({finished: exists}, {vid});
-      } else {
+      }
+      else {
         await table.taskUpdate({finished: false}, {vid});
       }
     }
@@ -88,7 +95,9 @@ module.exports = {
   taskFindOneFalse: async (message) => {
     let {playlist} = message;
     let object = await table
-      .taskFindOneWhere({playlist, finished: false});
+      .taskFindOne({
+        where: {playlist, finished: false},
+      });
     return object;
   },
 

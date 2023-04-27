@@ -9,6 +9,7 @@ const {notice_deskapp_show_the_video,
 } = require('./notice.dao');
 const {configGetFilepathSavelocation} = require('./config.dao');
 const {queueUpdateAllTask} = require('./queue.dao');
+const {Like} = require('typeorm');
 
 async function _videodelete(vid) {
   try {
@@ -145,8 +146,7 @@ async function videoPost(message, passdata) {
 }
 
 async function videoSetAllSearchingFalse() {
-  //await
-  await table.videoUpdateAll({searching: false});
+  await table.videoUpdate({searching: false});
 }
 
 async function videoCheckBoolean(message, passdata){
@@ -188,7 +188,8 @@ async function videoRedownload(message, passdata) {
 
 // ***************************
 module.exports = {
-  videoPost: videoPost,
+  videoPost:
+  videoPost,
   videoDelete: videoDelete,
 
   videoPutDao: async (message) => {
@@ -215,7 +216,11 @@ module.exports = {
     let {title} = message;
     console.log(`videoGetAllByLikeTitle title=${title}`);
 
-    let findAll = await table.videoFindWhereLike({title});
+    let findAll = await table.videoFind({
+      where: {
+        title: Like(`%${title}%`)
+      }
+    });
     let columnName = 'vid';
     return findAll.reduce(function(map, obj) {
       let key = obj[columnName];
@@ -235,7 +240,9 @@ module.exports = {
   },
   videoFindAllByAuthor: async (message) => {
     let {author} = message;
-    const values = await table.videoFindWhere({author});
+    const values = await table.videoFind({
+      where: {author}
+    });
     let columnName = 'vid';
     values.forEach((value) => {
       let {vid} = value;
@@ -254,7 +261,8 @@ module.exports = {
    * @return {Promise<void>}
    */
   videoSetAllDownloadingFalse: async () => {
-    await table.videoUpdateAll({downloading: false});
+    await table.videoUpdate({downloading: false});
   },
-  videoSetAllSearchingFalse: videoSetAllSearchingFalse,
+  videoSetAllSearchingFalse:
+  videoSetAllSearchingFalse,
 };
